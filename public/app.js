@@ -9,12 +9,12 @@
       var events = data.events;
       var firstDate = Date.parse(events[0].datetime_local);
       var timespan = Date.parse(events.last().datetime_local) - firstDate; //optionally use 'new Date()' to start timespan from current date
-      
+
       for (var i = 0; i < events.length; i++) {
         events[i].date_shift_from_zero = (Date.parse(events[i].datetime_local) - firstDate)/timespan;
         var bufferWidth = 100;
         var pixelShift = ($("div#timeline").width() - bufferWidth) * events[i].date_shift_from_zero - 16 + (0.5 * bufferWidth);
-        
+
         var html = "<div class='timeline-points' style='margin-left: " + Math.round(pixelShift) + "px'>" + (i + 1) + "</div>";
         $("div#timeline-points").append(html);
         console.log("date " + (i + 1) + ": " + events[i].datetime_local);
@@ -59,11 +59,15 @@
 
   queue()
       .defer(d3.json, "/us.json")
+<<<<<<< HEAD
       .defer(d3.tsv, "/readme-airports.tsv")
       .defer(d3.jsonp, "http://api.seatgeek.com/2/events?performers.slug=jason-aldean&per_page=" + numEvents + "&callback={callback}")
+=======
+      .defer(d3.jsonp, "http://api.seatgeek.com/2/events?performers.slug=jason-aldean&per_page=7&callback={callback}")
+>>>>>>> e8a47237c68e6f5e207038e25b2528f7494816b5
       .await(ready);
 
-  function ready(error, us, airports, events) {
+  function ready(error, us, events) {
     // translucent outer glow
     svg.append("path")
         .datum(topojson.object(us, us.objects.land))
@@ -79,20 +83,27 @@
 
     // collect the events
     events.events.forEach(function(evt, index) {
+      var coordinates = {
+        0: evt.venue.location.lon,
+        1: evt.venue.location.lat
+      };
+
       svg.append("path")
-        .datum({
-          type: "MultiPoint",
-          coordinates: [{
-            0: evt.venue.location.lon,
-            1: evt.venue.location.lat
-          }]
-        })
+        .datum({type: "MultiPoint", coordinates: [coordinates]})
         .attr("class", "points event-" + evt.id)
         .attr("d", path.pointRadius(function(d) { return unselected_radius; }));
+
+       svg.append("text")
+          .attr("class", "place-label event-" + evt.id)
+          .attr("transform", function(d) { return "translate(" + projection(coordinates) + ")"; })
+          .attr("x", function(d) { return coordinates[0] > -1 ? 6 : -6; })
+          .attr("y", function(d) { return coordinates[1] > -1 ? 1 : -1; })
+          .attr("dy", ".35em")
+          .text(function(d) { return index + 1; });
     });
 
   }
 
-  
+
 
 })();
