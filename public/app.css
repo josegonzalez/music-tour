@@ -1,0 +1,25 @@
+path {
+  fill: #BEDBF1;
+  stroke: #fff;
+  stroke-linejoin: round;
+}
+
+.points {
+  fill: #fff;
+  stroke: #80C5FF;
+  stroke-width:2px;
+}
+.points.active,
+.points:hover {
+  fill: #fff;
+  stroke-width:5px;
+}
+path:hover {
+  fill: #246AA9;
+}
+
+.land-glow {
+  fill: #000;
+  fill-opacity: .1;
+  filter: url(#glow);
+}
