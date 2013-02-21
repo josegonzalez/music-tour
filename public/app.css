@@ -5,6 +5,7 @@ path {
 }
 
 .points {
+  cursor: pointer;
   fill: #fff;
   stroke: #80C5FF;
   stroke-width: 2px;

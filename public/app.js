@@ -20,9 +20,16 @@
         $("div#timeline-points").append(html);
       }
 
-      $("div.timeline-points").hover(function() {
+      $("div.timeline-points").mouseenter(function() {
         $("div.timeline-points").removeClass("active");
         $(this).addClass("active");
+        
+        var eventId = $(this).attr("data-eventid");
+        console.log("eventid = " + eventId);
+        $("path.points").each(function() {
+          $(this).attr("class", $(this).attr("class").replace(" active",""));
+        });
+        $("path.points.event-" + eventId).attr("class", $("path.points.event-" + eventId).attr("class") + " active");
       });
     },
     dataType: 'jsonp'}
@@ -96,7 +103,7 @@
           .text(function(d) { return index + 1; });
     });
 
-    $("svg .place-label").hover(function() {
+    $("svg .place-label").mouseenter(function() {
       var $el = $(".points.event-" + $(this).attr("event_id"));
       $el.attr("class", $el.attr("class") + " active");
     },
