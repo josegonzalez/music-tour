@@ -2,25 +2,85 @@
 	<head>
 		<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
 		<script type="text/javascript">
-			var url = "http://api.seatgeek.com/2/events?performers.slug=jason-aldean&per_page=5&format=json&callback=fireEvent";
+			var numEvents = 5;
+			var url = "http://api.seatgeek.com/2/events?performers.slug=jason-aldean&per_page=" + numEvents + "&format=json&callback=fireEvent";
 			$.ajax({
 				url: url,
 				//data: '',
 				success: function(data) {
-					var dates = [];
-					for (var i = 0; i < data.events.length; i++) {
-						dates[i] = data.events[i].datetime_local;
+					var events = data.events;
+					var firstDate = Date.parse(events[0].datetime_local);
+					var timespan = Date.parse(events.last().datetime_local) - firstDate; //optionally use 'new Date()' to start timespan from current date
+					
+					for (var i = 0; i < events.length; i++) {
+						events[i].date_shift_from_zero = (Date.parse(events[i].datetime_local) - firstDate)/timespan;
+						var bufferWidth = 100;
+						var pixelShift = ($("div#timeline").width() - bufferWidth) * events[i].date_shift_from_zero - 16 + (0.5 * bufferWidth);
+						
+						var html = "<div class='point' style='margin-left: " + Math.round(pixelShift) + "px'>" + (i + 1) + "</div>";
+						$("div#points").append(html);
+						console.log("date " + (i + 1) + ": " + events[i].datetime_local);
 					}
-					console.log(dates);
+
+					$(".point").hover(function() {
+						$(this).toggleClass("active");
+					});
+
+					//$("pre.data").html(JSON.stringify(events, null, 4));
 				},
 				dataType: 'jsonp'}
 			);
 
+			Array.prototype.last = function() {return this[this.length-1];}
 		</script>
+		<style>
+			div#timeline {
+				border-bottom: 4px solid #b9d8f0;
+				color: #fff;
+				height: 0px;
+				margin: 15px 0 17px 0;
+				position: absolute;
+				width: inherit;
+				z-index: -1;
+			}
+
+			.tour-map {
+				margin: auto;
+				width: 600px;
+			}
+
+			.tour-map .active {
+				-webkit-box-shadow: 0px 0px 0px 4px rgba(123, 199, 255, 1);
+				-moz-box-shadow: 0px 0px 0px 4px rgba(123, 199, 255, 1);
+				box-shadow: 0px 0px 0px 4px rgba(123, 199, 255, 1);
+			}
+
+			.point {
+				background-color: #fff;
+				border: 1px solid #75c4ff;
+				border-radius: 16px;
+				color: #388ee8;
+				cursor: pointer;
+				display: inline-block;
+				font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+				font-size: 20px;
+				line-height: 32px;
+				height: 32px;
+				position: absolute;
+				text-align: center;
+				width: 32px;
+			}
+
+			pre {
+				color: #ddd;
+			}
+		</style>
 	</head>
 	<body>
-		<div class="container">
-			
+		<div class="tour-map">
+			<div id="timeline"></div>
+			<div id="points"></div>
 		</div>
+		<pre class="data"></pre>
 	</body>
 </html>
