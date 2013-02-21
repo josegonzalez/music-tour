@@ -4,7 +4,6 @@
   var url = "http://api.seatgeek.com/2/events?performers.slug=jason-aldean&per_page=" + numEvents + "&format=json&callback=fireEvent";
   $.ajax({
     url: url,
-    //data: '',
     success: function(data) {
       var events = data.events;
       var firstDate = Date.parse(events[0].datetime_local);
@@ -22,9 +21,8 @@
 
       $("div.timeline-points").hover(function() {
         $(this).toggleClass("active");
+        console.log("test");
       });
-
-      //$("pre.data").html(JSON.stringify(events, null, 4));
     },
     dataType: 'jsonp'}
   );
