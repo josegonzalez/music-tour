@@ -89,6 +89,7 @@
 
        svg.append("text")
           .attr("class", "place-label event-" + evt.id)
+          .attr("event_id", evt.id)
           .attr("transform", function(d) { return "translate(" + projection(coords) + ")"; })
           .attr("x", function(d) { return coords[0] > -1 ? (il > 1 ? 12 : 6) : (il > 1 ? -12 : -6); })
           .attr("y", function(d) { return coords[1] > -1 ? 1 : -1; })
@@ -96,6 +97,14 @@
           .text(function(d) { return index + 1; });
     });
 
+    $(".place-label").hover(function() {
+      var $el = $(".points.event-" + $(this).attr("event_id"));
+      $el.attr("class", $el.attr("class") + " active");
+    },
+    function() {
+      var $el = $(".points.event-" + $(this).attr("event_id"));
+      $el.attr("class", $el.attr("class").replace(" active", ""));
+    });
   }
 
 })();
