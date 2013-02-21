@@ -83,21 +83,20 @@
 
     // collect the events
     events.events.forEach(function(evt, index) {
-      var coordinates = {
-        0: evt.venue.location.lon,
-        1: evt.venue.location.lat
-      };
+      var il = (index + 1).toString().length,
+          location = evt.venue.location,
+          coords = _.extend({}, [location.lon, location.lat]);
 
       svg.append("path")
-        .datum({type: "MultiPoint", coordinates: [coordinates]})
+        .datum({type: "MultiPoint", coordinates: [coords]})
         .attr("class", "points event-" + evt.id)
         .attr("d", path.pointRadius(function(d) { return unselected_radius; }));
 
        svg.append("text")
           .attr("class", "place-label event-" + evt.id)
-          .attr("transform", function(d) { return "translate(" + projection(coordinates) + ")"; })
-          .attr("x", function(d) { return coordinates[0] > -1 ? 6 : -6; })
-          .attr("y", function(d) { return coordinates[1] > -1 ? 1 : -1; })
+          .attr("transform", function(d) { return "translate(" + projection(coords) + ")"; })
+          .attr("x", function(d) { return coords[0] > -1 ? (il > 1 ? 12 : 6) : (il > 1 ? -12 : -6); })
+          .attr("y", function(d) { return coords[1] > -1 ? 1 : -1; })
           .attr("dy", ".35em")
           .text(function(d) { return index + 1; });
     });
