@@ -61,7 +61,7 @@
           .attr("x", function(d) { return coordinates[0] > -1 ? 6 : -6; })
           .attr("y", function(d) { return coordinates[1] > -1 ? 1 : -1; })
           .attr("dy", ".35em")
-          .text(function(d) { return index; });
+          .text(function(d) { return index + 1; });
     });
 
   }
