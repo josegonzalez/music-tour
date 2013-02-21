@@ -11,15 +11,16 @@ path {
 }
 
 .points.active,
+.points.current,
 .points:hover {
   fill: #fff;
   stroke-width: 5px;
 }
 
-path:hover {
+/*path:hover {
   fill: #246AA9;
 }
-
+*/
 .land-glow {
   fill: #000;
   fill-opacity: .1;
