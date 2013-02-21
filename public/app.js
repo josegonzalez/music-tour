@@ -1,6 +1,6 @@
 (function() {
   //ben's js
-  var numEvents = 5;
+  var numEvents = 7;
   var url = "http://api.seatgeek.com/2/events?performers.slug=jason-aldean&per_page=" + numEvents + "&format=json&callback=fireEvent";
   $.ajax({
     url: url,
@@ -60,7 +60,7 @@
   queue()
       .defer(d3.json, "/us.json")
       .defer(d3.tsv, "/readme-airports.tsv")
-      .defer(d3.jsonp, "http://api.seatgeek.com/2/events?performers.slug=jason-aldean&per_page=10&callback={callback}")
+      .defer(d3.jsonp, "http://api.seatgeek.com/2/events?performers.slug=jason-aldean&per_page=" + numEvents + "&callback={callback}")
       .await(ready);
 
   function ready(error, us, airports, events) {

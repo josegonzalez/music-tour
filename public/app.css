@@ -33,6 +33,7 @@ div#timeline {
 
 div#timeline-line {
   background-color: #BEDBF1;
+  border-radius: 2px;
   color: #fff;
   height: 4px;
   margin: 15px 0 17px 0;
