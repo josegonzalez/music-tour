@@ -2,10 +2,19 @@
 	<head>
 		<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
 		<script type="text/javascript">
-			var url = "http://api.seatgeek.com/2/events?performers.slug=jason-aldean&per_page=5";
-			$.get(url, function(data) {
-
-			});
+			var url = "http://api.seatgeek.com/2/events?performers.slug=jason-aldean&per_page=5&format=json&callback=fireEvent";
+			$.ajax({
+				url: url,
+				//data: '',
+				success: function(data) {
+					var dates = [];
+					for (var i = 0; i < data.events.length; i++) {
+						dates[i] = data.events[i].datetime_local;
+					}
+					console.log(dates);
+				},
+				dataType: 'jsonp'}
+			);
 
 		</script>
 	</head>
