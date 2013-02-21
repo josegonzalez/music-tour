@@ -14,14 +14,15 @@
         var bufferWidth = 100;
         var pixelShift = ($("div#timeline").width() - bufferWidth) * events[i].date_shift_from_zero - 16 + (0.5 * bufferWidth);
 
-        var html = "<div class='timeline-points' style='margin-left: " + Math.round(pixelShift) + "px'>" + (i + 1) + "</div>";
+        var classes = "timeline-points";
+        if(i==0) {classes = classes + " active";}
+        var html = "<div class='" + classes + "' style='margin-left: " + Math.round(pixelShift) + "px' data-eventid='" + events[i].id + "'>" + (i + 1) + "</div>";
         $("div#timeline-points").append(html);
-        console.log("date " + (i + 1) + ": " + events[i].datetime_local);
       }
 
       $("div.timeline-points").hover(function() {
-        $(this).toggleClass("active");
-        console.log("test");
+        $("div.timeline-points").removeClass("active");
+        $(this).addClass("active");
       });
     },
     dataType: 'jsonp'}
