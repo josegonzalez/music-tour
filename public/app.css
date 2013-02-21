@@ -34,7 +34,11 @@ path:hover {
 }
 
 /* ben's css */
-div#timeline-line {
+#timeline {
+  width: 100%;
+}
+
+#timeline-line {
   background-color: #BEDBF1;
   border-radius: 2px;
   color: #fff;
@@ -44,7 +48,7 @@ div#timeline-line {
   width: 790px;
 }
 
-div.timeline-points {
+.timeline-points {
   background-color: #fff;
   border: 2px solid #80C5FF;
   border-radius: 18px;
@@ -60,7 +64,7 @@ div.timeline-points {
   width: 30px;
 }
 
-div.timeline-points .active {
+.timeline-points.active {
   -webkit-box-shadow: 0px 0px 0px 4px rgba(128, 197, 255, 1);
   -moz-box-shadow: 0px 0px 0px 4px rgba(128, 197, 255, 1);
   box-shadow: 0px 0px 0px 4px rgba(128, 197, 255, 1);

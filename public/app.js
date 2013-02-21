@@ -95,7 +95,7 @@
           .text(function(d) { return index + 1; });
     });
 
-    $(".place-label").hover(function() {
+    $("svg .place-label").hover(function() {
       var $el = $(".points.event-" + $(this).attr("event_id"));
       $el.attr("class", $el.attr("class") + " active");
     },
