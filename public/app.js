@@ -1,5 +1,38 @@
 (function() {
-  var width = 960,
+  //ben's js
+  var numEvents = 5;
+  var url = "http://api.seatgeek.com/2/events?performers.slug=jason-aldean&per_page=" + numEvents + "&format=json&callback=fireEvent";
+  $.ajax({
+    url: url,
+    //data: '',
+    success: function(data) {
+      var events = data.events;
+      var firstDate = Date.parse(events[0].datetime_local);
+      var timespan = Date.parse(events.last().datetime_local) - firstDate; //optionally use 'new Date()' to start timespan from current date
+      
+      for (var i = 0; i < events.length; i++) {
+        events[i].date_shift_from_zero = (Date.parse(events[i].datetime_local) - firstDate)/timespan;
+        var bufferWidth = 100;
+        var pixelShift = ($("div#timeline").width() - bufferWidth) * events[i].date_shift_from_zero - 16 + (0.5 * bufferWidth);
+        
+        var html = "<div class='timeline-points' style='margin-left: " + Math.round(pixelShift) + "px'>" + (i + 1) + "</div>";
+        $("div#timeline-points").append(html);
+        console.log("date " + (i + 1) + ": " + events[i].datetime_local);
+      }
+
+      $("div.timeline-points").hover(function() {
+        $(this).toggleClass("active");
+      });
+
+      //$("pre.data").html(JSON.stringify(events, null, 4));
+    },
+    dataType: 'jsonp'}
+  );
+
+  Array.prototype.last = function() {return this[this.length-1];}
+
+  //jose's js
+  var width = 790,
       height = 500;
 
   var radius = d3.scale.sqrt()
@@ -14,7 +47,7 @@
       .projection(projection)
       .pointRadius(1.5);
 
-  var svg = d3.select("body").append("svg")
+  var svg = d3.select(".tour-map").append("svg")
       .attr("viewBox", "0 0 " + width + " " + height)
       .attr("width", width)
       .attr("height", height);
@@ -59,5 +92,7 @@
     });
 
   }
+
+  
 
 })();
