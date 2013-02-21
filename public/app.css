@@ -23,3 +23,9 @@ path:hover {
   fill-opacity: .1;
   filter: url(#glow);
 }
+.place-label {
+  cursor: pointer;
+  fill: #82ACEF;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 20px;
+}
