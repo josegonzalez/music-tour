@@ -17,7 +17,7 @@
 						var bufferWidth = 100;
 						var pixelShift = ($("div#timeline").width() - bufferWidth) * events[i].date_shift_from_zero - 16 + (0.5 * bufferWidth);
 						
-						var html = "<div class='point' style='margin-left: " + Math.round(pixelShift) + "px'>" + (i + 1) + "</div>";
+						var html = "<div class='points' style='margin-left: " + Math.round(pixelShift) + "px'>" + (i + 1) + "</div>";
 						$("div#points").append(html);
 						console.log("date " + (i + 1) + ": " + events[i].datetime_local);
 					}
@@ -33,7 +33,7 @@
 
 			Array.prototype.last = function() {return this[this.length-1];}
 		</script>
-		<style>
+		<!-- <style>
 			div#timeline {
 				background
 				border-bottom: 4px solid #b9d8f0;
@@ -75,7 +75,7 @@
 			pre {
 				color: #ddd;
 			}
-		</style>
+		</style> -->
 	</head>
 	<body>
 		<div class="tour-map">
