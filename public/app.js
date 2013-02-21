@@ -59,12 +59,7 @@
 
   queue()
       .defer(d3.json, "/us.json")
-<<<<<<< HEAD
-      .defer(d3.tsv, "/readme-airports.tsv")
       .defer(d3.jsonp, "http://api.seatgeek.com/2/events?performers.slug=jason-aldean&per_page=" + numEvents + "&callback={callback}")
-=======
-      .defer(d3.jsonp, "http://api.seatgeek.com/2/events?performers.slug=jason-aldean&per_page=7&callback={callback}")
->>>>>>> e8a47237c68e6f5e207038e25b2528f7494816b5
       .await(ready);
 
   function ready(error, us, events) {
@@ -102,7 +97,5 @@
     });
 
   }
-
-
 
 })();
