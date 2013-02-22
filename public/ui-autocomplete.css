@@ -1,0 +1,157 @@
+/**
+ * Autocomplete Styles
+ *
+ * .ui-sgautocomplete - global search autocomplete
+ * .ui-autocomplete   - columbus location autocomplete
+ *
+ * Please don't run this stylesheet through a css prettifier, or
+ * it will be impossible to edit.
+ */
+
+.ui-autocomplete, .ui-sgautocomplete {
+  background: #fff;
+  list-style: none;
+  position: absolute; /* position now set by javascript - see web/js/jquery-plugins/sgautocomplete.js:93 */
+  width: 710px;
+  z-index: 2000;
+  text-shadow: none;
+  -webkit-border-radius: 5px;
+     -moz-border-radius: 5px;
+          border-radius: 5px;
+  -webkit-box-shadow: 0 4px 10px rgba(0, 0, 0, .5), 0 0 0 1px rgba(0, 0, 0, .3);
+     -moz-box-shadow: 0 4px 10px rgba(0, 0, 0, .5), 0 0 0 1px rgba(0, 0, 0, .3);
+          box-shadow: 0 4px 10px rgba(0, 0, 0, .5), 0 0 0 1px rgba(0, 0, 0, .3);
+}
+ul.ui-autocomplete    { width: 196px; padding: 9px 16px; }
+ul.ui-autocomplete li { display: block; cursor:pointer;  }
+ul.ui-autocomplete li a {
+  font-weight:bold;
+  padding: 4px 0;
+  font-size:13px;
+  display: block;
+  color:#000;
+  text-decoration: none;
+}
+ul.ui-autocomplete li a.ui-state-hover {
+  background-color: #2377b4;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#2377b4), to(#185c9b));
+  background-image: -webkit-linear-gradient(top, #2377b4, #185c9b);
+  background-image:    -moz-linear-gradient(top, #2377b4, #185c9b);
+  background-image:      -o-linear-gradient(top, #2377b4, #185c9b);
+  background-image:     -ms-linear-gradient(top, #2377b4, #185c9b);
+  background-image:         linear-gradient(top, #2377b4, #185c9b);
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#256ac4', EndColorStr='#0242a4');
+  color: #fff;
+  display: block;
+  margin-left: -16px;
+  padding-left: 16px;
+  width: 212px;
+}
+
+ul.ui-autocomplete li.ui-active-menuitem-li      { padding: 0; }
+ul.ui-autocomplete li.ui-active-menuitem-li + li { margin-top: -1px;  }
+
+
+/* Map page needs a special position because of a z-index issue and covering other elements */
+.map-page .old-header .ui-sgautocomplete { margin: 40px 0 0 60px; }
+.map-page .map-popup .ui-sgautocomplete { margin: 64px 0 0; }
+.home .ui-sgautocomplete { margin: 84px 0 0 0px; }
+
+
+/* Loading Indicators */
+.sg-loading-indicator {
+  background: url(/images/loaders/searchLoader.gif);
+  width: 25px;
+  height: 25px;
+  position: absolute;
+  top: 7px;
+  right: 0;
+  display: none;
+}
+.map-page .sg-loading-indicator { top: 12px; right: 12px; }
+.map-page .map-popup .sg-loading-indicator { top: 8px; right: 8px; }
+
+.ui-sgautocomplete .sgautocomplete-results-wrap { padding:5px 0; border-top:1px solid #CCC; }
+.ui-sgautocomplete .sgautocomplete-row-first .sgautocomplete-results-wrap { border-top:none; }
+.ui-sgautocomplete .sgautocomplete-results { list-style:none; }
+.ui-sgautocomplete .sgautocomplete-result {
+  padding: 6px 8px 6px 30px;
+  display:block;
+  text-decoration:none;
+  cursor:pointer;
+  margin-left: -1px;
+}
+.ui-sgautocomplete .sgautocomplete-result:hover  { cursor:pointer; }
+.ui-sgautocomplete .sgautocomplete-results-label { font-size: 11px; text-transform: uppercase; color: #000; padding: 5px 8px 5px 16px; }
+.ui-sgautocomplete .sgautocomplete-results-icon  {
+  width: 50px;
+  background-color: #eeeeee;
+  background-image: -webkit-gradient(linear, left center, right center, from(#eeeeee), to(#dfdfdf));
+  background-image: -webkit-linear-gradient(left, #eeeeee, #dfdfdf);
+  background-image:    -moz-linear-gradient(left, #eeeeee, #dfdfdf);
+  background-image:      -o-linear-gradient(left, #eeeeee, #dfdfdf);
+  background-image:     -ms-linear-gradient(left, #eeeeee, #dfdfdf);
+  background-image:         linear-gradient(left, #eeeeee, #dfdfdf);
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=1,StartColorStr='#eeeeee', EndColorStr='#dfdfdf');
+  border-right: 1px solid #b2b2b2;
+  border-top:   1px solid #b5b5b5;
+  vertical-align: top;
+}
+.ui-sgautocomplete .sgautocomplete-row-first .sgautocomplete-results-icon { border-top: none; }
+.ui-sgautocomplete .sgautocomplete-results-icon div {
+  background-image: url(/images/new/search/autocomplete.png);
+  background-repeat: no-repeat;
+  width: 49px;
+  height: 27px;
+  margin-top: 10px;
+}
+.ui-sgautocomplete .sgautocomplete-row-first .sgautocomplete-results-icon div,
+.ui-sgautocomplete .sgautocomplete-row-first .sgautocomplete-results-label { display: none; }
+.icon-tophit     { background-position:    0px; }
+.icon-teamband   { background-position:  -50px; }
+.icon-event      { background-position: -100px; }
+.icon-venue      { background-position: -150px; }
+.icon-tournament { background-position: -200px; }
+
+.ui-sgautocomplete .sgautocomplete-result-title    { display: block; color: #333; font-size: 12px; font-weight: bold; }
+.ui-sgautocomplete .sgautocomplete-result-subtitle { display: block; color: #777; font-size: 11px; }
+.ui-sgautocomplete .sgautocomplete-result-focus {
+  background-color: #2377b4;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#2377b4), to(#185c9b));
+  background-image: -webkit-linear-gradient(top, #2377b4, #185c9b);
+  background-image:    -moz-linear-gradient(top, #2377b4, #185c9b);
+  background-image:      -o-linear-gradient(top, #2377b4, #185c9b);
+  background-image:     -ms-linear-gradient(top, #2377b4, #185c9b);
+  background-image:         linear-gradient(top, #2377b4, #185c9b);
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#2377b4', EndColorStr='#185c9b');
+  border-top: 1px solid #2377b4;
+
+  padding: 5px 8px 6px 30px;
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2);
+  -moz-box-shadow:    inset 0 1px 0 rgba(255, 255, 255, .2);
+  box-shadow:         inset 0 1px 0 rgba(255, 255, 255, .2);
+  position: relative;
+  z-index: 1;
+}
+.ui-sgautocomplete .sgautocomplete-result-focus:active {
+  background-color: #1d539a;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#1d539a), to(#012f74));
+  background-image: -webkit-linear-gradient(top, #1d539a, #012f74);
+  background-image:    -moz-linear-gradient(top, #1d539a, #012f74);
+  background-image:      -o-linear-gradient(top, #1d539a, #012f74);
+  background-image:     -ms-linear-gradient(top, #1d539a, #012f74);
+  background-image:         linear-gradient(top, #1d539a, #012f74);
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#1d539a', EndColorStr='#012f74');
+  border-top: 1px solid #012f74;
+}
+.ui-sgautocomplete .sgautocomplete-result-focus .sgautocomplete-result-title,
+.ui-sgautocomplete .sgautocomplete-result-focus .sgautocomplete-result-subtitle {
+  color:#fff;
+  text-shadow: 0 1px 1px #32629b;
+}
+
+/* Border radius fix, because the overflow:hidden hack doesn't work for some reason */
+.ui-sgautocomplete tr:first-child .sgautocomplete-results-icon { -webkit-border-radius: 5px 0 0;   -moz-border-radius: 5px 0 0;   border-radius: 5px 0 0;   }
+.ui-sgautocomplete tr:last-child  .sgautocomplete-results-icon { -webkit-border-radius: 0 0 0 5px; -moz-border-radius: 0 0 0 5px; border-radius: 0 0 0 5px; }
+
+

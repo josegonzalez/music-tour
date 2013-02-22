@@ -10,76 +10,107 @@
     );
   };
 
-  var pages = {},
-      chunk_size = 7,
-      max_events = 20,
-      total_pages = 0,
-      height = 500,
-      width = 790;
+  var input       = $("#search-input"),
+      searchForm  = $('#search-form'),
+      searchGhost = $("#search-ghost");
 
-  var radius = d3.scale.sqrt()
-      .domain([0, 1e6])
-      .range([0, 10]);
+  input
+    .focus(function () {
+      if (input.val() == input.attr("rel")) {
+        input.val("");
+        searchGhost.show();
+      }
+      searchForm.addClass('focused');
+    })
+    .blur(function() {
+      if(input.val() === "") input.val(input.attr("rel"));
+      searchGhost.hide();
+      searchForm.removeClass('focused');
+    })
+    .bind('keydown paste cut', function() {
+      setTimeout(function() {
+        if(input.val() === "") searchGhost.fadeIn(200);
+        else searchGhost.hide();
+      }, 0);
+    });
 
-  var unselected_radius = radius(2500000);
+  $('.search-input').focus();
 
-  var projection = albersUsa();
-
-  var path = d3.geo.path()
-      .projection(projection)
-      .pointRadius(1.5);
-
-  var svg = d3.select(".music-tour-map").append("svg")
-      .attr("viewBox", "0 0 " + width + " " + height)
-      .attr("width", width)
-      .attr("height", height);
-
-  svg.append("filter")
-      .attr("id", "glow")
-    .append("feGaussianBlur")
-      .attr("stdDeviation", 5);
-
-  queue()
-      .defer(d3.json, "/us.json")
-      .defer(d3.jsonp, "http://api.seatgeek.com/2/events?performers.slug=jason-aldean&per_page=" + max_events + "&callback={callback}")
-      .await(ready);
 
   window.MT = window.MT || {};
   MT.current_page = 0;
 
-  function ready(error, us, data) {
-    pages = data.events.chunk(chunk_size);
-    total_pages = pages.length;
+  MT.fire = function(slug) {
+    if (MT.svg) MT.clearPage();
+    $("svg").remove();
 
-    // translucent outer glow
-    var land = svg.selectAll(".land")
-                  .data([topojson.object(us, us.objects.land)])
-                  .enter()
-                    .append("path")
-                      .attr("d", path)
-                      .attr("class", "music-tour-glow");
+    MT.pages = {};
+    MT.chunk_size = 7;
+    MT.max_events = 20;
+    MT.total_pages = 0;
+    MT.height = 500,
+    MT.width = 790;
 
-    var states = svg.selectAll(".music-tour-states")
-                    .data(topojson.object(us, us.objects.states).geometries)
-                    .enter()
-                      .append("path")
-                        .attr("d", path)
-                        .attr("class", "music-tour-states");
+    MT.radius = d3.scale.sqrt()
+        .domain([0, 1e6])
+        .range([0, 10]);
 
-    // draw the first page (initialized to 0)
-    MT.nextPage();
-  }
+    MT.unselected_radius = MT.radius(2500000);
+
+    MT.projection = albersUsa();
+
+    MT.path = d3.geo.path()
+        .projection(MT.projection)
+        .pointRadius(1.5);
+
+    MT.svg = d3.select(".music-tour-map").append("svg")
+        .attr("viewBox", "0 0 " + MT.width + " " + MT.height)
+        .attr("width", MT.width)
+        .attr("height", MT.height);
+
+    MT.svg.append("filter")
+        .attr("id", "glow")
+      .append("feGaussianBlur")
+        .attr("stdDeviation", 5);
+
+    queue()
+      .defer(d3.json, "/us.json")
+      .defer(d3.jsonp, "http://api.seatgeek.com/2/events?performers.slug=" + slug + "&per_page=" + MT.max_events + "&callback={callback}")
+      .await(function(error, us, data) {
+          // ERROR DETECTION
+          MT.pages = data.events.chunk(MT.chunk_size);
+          MT.total_pages = MT.pages.length;
+
+          // translucent outer glow
+          var land = MT.svg.selectAll(".land")
+                        .data([topojson.object(us, us.objects.land)])
+                        .enter()
+                          .append("path")
+                            .attr("d", MT.path)
+                            .attr("class", "music-tour-glow");
+
+          var states = MT.svg.selectAll(".music-tour-states")
+                          .data(topojson.object(us, us.objects.states).geometries)
+                          .enter()
+                            .append("path")
+                              .attr("d", MT.path)
+                              .attr("class", "music-tour-states");
+
+          // draw the first page (initialized to 0)
+          MT.nextPage();
+        });
+  };
 
   MT.clearPage = function() {
     $(".music-tour-timeline-points").remove();
-    svg.selectAll(".music-tour-events")
+    MT.svg.selectAll(".music-tour-events")
       .data([])
       .exit()
       .remove();
   };
 
   MT.nextPage = function() {
-    if (MT.current_page < total_pages) {
+    if (MT.current_page < MT.total_pages) {
       MT.current_page++;
       MT.drawPage(MT.current_page);
     }
@@ -97,8 +128,8 @@
     active_last = active_last || false;
     MT.clearPage();
 
-    var events = pages[page - 1],
-        index_start = (MT.current_page - 1) * chunk_size,
+    var events = MT.pages[page - 1],
+        index_start = (MT.current_page - 1) * MT.chunk_size,
         firstDate = Date.parse(events[0].datetime_local),
         timespan = Date.parse(events.last().datetime_local) - firstDate;
 
@@ -112,7 +143,7 @@
 
     MT.getSeoData(events);
 
-    var group = svg.selectAll(".music-tour-events").data(events).enter()
+    var group = MT.svg.selectAll(".music-tour-events").data(events).enter()
                     .append("g")
                     .attr("data-event-id", function(d, index) { return d.id; })
                     .attr("class", function(d) { return "music-tour-events event-" + d.id; } )
@@ -122,11 +153,11 @@
       .attr("class", function(d, index) { return "music-tour-points event-" + d.id; })
       .attr("data-event-id", function(d, index) { return d.id; })
       .datum(function(d, index) { return {type: "Point", coordinates: _.extend({}, [d.venue.location.lon, d.venue.location.lat])}; })
-      .attr("d", path.pointRadius(function(d) { return unselected_radius; }));
+      .attr("d", MT.path.pointRadius(function(d) { return MT.unselected_radius; }));
     group.append("text")
       .attr("class", function(d, index) { return "music-tour-label event-" + d.id; })
       .attr("data-event-id", function(d, index) { return d.id; })
-      .attr("transform", function(d, index) { return "translate(" + projection(_.extend({}, [d.venue.location.lon, d.venue.location.lat])) + ")"; })
+      .attr("transform", function(d, index) { return "translate(" + MT.projection(_.extend({}, [d.venue.location.lon, d.venue.location.lat])) + ")"; })
       .attr("x", function(d, index) { return ((index_start + index + 1).toString().length > 1 ? -10 : -5); })
       .attr("y", function(d, index) {
         var coords = _.extend({}, [d.venue.location.lon, d.venue.location.lat]);
@@ -181,7 +212,7 @@
     var x = (direction == "forward") ? 1 : "backward" ? -1 : 0;
     var index = MT.currentActiveIndex(events);
     switch(x + index) {
-      case chunk_size:
+      case MT.chunk_size:
         MT.nextPage();
         break;
       case -1:
@@ -269,7 +300,7 @@
               lastDateState = "never",
               daysSinceState = "never";
 
-          e.performers.shift();
+          pri_performer = e.performers.shift();
 
           for (var venue_id in data.venue) {
             if (venue_id == e.venue.id) {
@@ -285,8 +316,8 @@
 
           var obj = {
             "event_id": e.id,
-            "performer_slug": e.performers[0].slug,
-            "performer_short_name": e.performers[0].short_name,
+            "performer_slug": pri_performer.slug,
+            "performer_short_name": pri_performer.short_name,
             "venue_id": e.venue.id,
             "venue_name": e.venue.name,
             "venue_state": MT.states[e.venue.state],
@@ -294,7 +325,7 @@
             "last_date_state": lastDateState,
             "days_since_venue": daysSinceVenue,
             "days_since_state": daysSinceState,
-            "openers": e.performers
+            "openers": e.performers ? e.performers : []
           };
 
           if (index === 0) {

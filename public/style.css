@@ -9,6 +9,10 @@ body {
   margin: 0 auto;
 }
 
+.clear {
+  clear: both;
+}
+
 a {
   color: #00a5f2;
   text-decoration: none;
@@ -56,6 +60,85 @@ a:hover { color: #005278; }
   position: absolute;
   top: -10px;
   right: 0;
+}
+
+/* SEARCH */
+.music-tour-search {
+  height: 100px;
+  margin-top: 20px;
+}
+.search-form {
+  position: relative;
+}
+.search-bg {
+  right: 115px;
+  border-radius: 5px;
+  background: white;
+  position: absolute;
+  top: 6px;
+  left: 2px;
+  height: 70px;
+  border: 1px solid #9A9A9A;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-transition: box-shadow .3s ease;
+  -moz-transition: box-shadow .3s ease;
+  transition: box-shadow .3s ease;
+}
+.search-submit-large {
+  background: url(http://seatgeek.com/images/new/home/search.png) top no-repeat;
+  width: 103px;
+  height: 75px;
+  position: absolute;
+  top: 5px;
+  right: 0;
+  border: 0;
+  cursor: pointer;
+}
+.search-input-wrapper {
+  top: 16px;
+  left: 25px;
+  right: 135px;
+  position: absolute;
+}
+form .search-ghost {
+  font: normal 30px proxima-nova-1, proxima-nova-2, helvetica, arial, sans-serif;
+  padding-top: 11px !important;
+}
+.search-form .search-ghost {
+color: #CCC;
+padding: 7px 0 7px 10px;
+cursor: text;
+white-space: nowrap;
+overflow-x: hidden;
+}
+.search-form .search-ghost {
+position: absolute;
+top: 0;
+left: 0;
+border: none;
+background-color: transparent;
+outline: none;
+width: 100%;
+}
+.search-form input[type="text"]{
+  font: normal 30px proxima-nova-1, proxima-nova-2, helvetica, arial, sans-serif;
+  padding-top: 9px !important;
+}
+
+.search-form input[type="text"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: none;
+  background-color: transparent;
+  outline: none;
+  width: 100%;
+  padding: 7px 10px;
 }
 
 /* 2. Mapping Interface */
