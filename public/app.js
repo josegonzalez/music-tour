@@ -145,7 +145,8 @@
     
     // do things on mouseenter of timeline points
     $(".music-tour-timeline-points").mouseenter(function() {
-      activatePoints($(this).attr("data-eventid"));
+      var oldZ = $(this).css("z-index");
+      activatePoints($(this).attr("data-eventid"), oldZ);
       writeSeoData($(this).data("info"));
     });
 
@@ -186,7 +187,11 @@
     }
   }
 
-  function activatePoints(eventId) {
+  function activatePoints(eventId, oldZ) {
+    if (typeof oldZ !== 'undefined') {
+      $(".music-tour-timeline-points.active").css("z-index", oldZ);
+    }
+
     // first deactivate all points
     $("svg .music-tour-points, .music-tour-timeline-points").each(function() {
       $(this).attr("class", $(this).attr("class").replace(" active",""));
@@ -196,6 +201,7 @@
     $(".music-tour-timeline-points[data-eventid='" + eventId + "'], svg .music-tour-points.event-" + eventId).each(function() {
       $(this).attr("class", $(this).attr("class") + " active");
     });
+    $(".music-tour-timeline-points[data-eventid='" + eventId + "']").css("z-index", 30);
   }
   
   // get seo data
