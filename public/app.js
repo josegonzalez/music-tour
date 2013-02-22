@@ -109,7 +109,7 @@
             '<div class="tour-info">' + evt.venue.name + '</div>'
           ].join("\n")});
 
-        if ($(d3.event.fromElement).is("svg")) that.tooltip("show");
+        if ($(d3.event.fromElement).is("svg") || ($(d3.event.fromElement).is("path") && $(d3.event.toElement).is("path"))) that.tooltip("show");
       }
 
       var group = svg.selectAll("events")
