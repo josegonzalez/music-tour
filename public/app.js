@@ -86,6 +86,8 @@
       .await(function(error, us, data) {
           // ERROR DETECTION
 
+          MT.artistId = data.events[0].performers[0].id;
+
           MT.addEvents(data.events);
 
           MT.pages = data.events.chunk(MT.chunk_size);
@@ -343,7 +345,7 @@
 
   // get seo data
   MT.getSeoData = function(events) {
-    var seoUrl = "http://seatgeek.com/utility/mapseo?performer_id=918";
+    var seoUrl = "http://seatgeek.com/utility/mapseo?performer_id=" + MT.artistId;
     var urlPieces = _.map(events, function(e, index) {
       return "&venues[" + index + "][state]=" + e.venue.state + "&venues[" + index + "][id]=" + e.venue.id;
     });
