@@ -130,7 +130,10 @@
             "days_since_state": daysSinceState,
             "openers": openers
           };
+
+          if (index == 0) { writeSeoData(obj); }
           
+          // attach seo data object to relevant points and point labels for getting later on mouseover
           $("[data-eventid='" + e.id + "'], svg path.points.event-" + e.id + ", svg text.place-label.event-" + e.id).data("info", obj);
         });
       },
@@ -148,16 +151,7 @@
       var thisMapPoint = $("svg path.points.event-" + $(this).attr("data-eventid"));
       thisMapPoint.attr("class", thisMapPoint.attr("class") + " active");
 
-      var thisObjInfo = $(this).data("info");
-      var openerHtml = _.map(thisObjInfo.openers, function(o, i) {
-        return "<a href='http://seatgeek.com/" + o.slug + "-tickets'>" + o.short_name + "</a>"
-      });
-      $("span.openers").html(openerHtml.join(", "));
-      $("span.performer-name").text(thisObjInfo.performer_short_name);
-      $("span.venue-name").text(thisObjInfo.venue_name);
-      $("span.state-name").text(thisObjInfo.venue_state);
-      $("span.days-since-venue").text(thisObjInfo.days_since_venue);
-      $("span.days-since-state").text(thisObjInfo.days_since_state);
+      writeSeoData($(this).data("info"));
     });
 
     // activate stuff on mouseenter of map points
@@ -170,7 +164,11 @@
       var thisTimelinePoint = $(".timeline-points[data-eventid='" + $(this).attr("data-eventid") + "']");
       thisTimelinePoint.attr("class", thisTimelinePoint.attr("class") + " active");
 
-      var thisObjInfo = $(this).data("info");
+      writeSeoData($(this).data("info"));
+    });
+
+    function writeSeoData(thisObjInfo) {
+      var thisObjInfo = thisObjInfo;
       var openerHtml = _.map(thisObjInfo.openers, function(o, i) {
         return "<a href='http://seatgeek.com/" + o.slug + "-tickets'>" + o.short_name + "</a>"
       });
@@ -180,7 +178,7 @@
       $("span.state-name").text(thisObjInfo.venue_state);
       $("span.days-since-venue").text(thisObjInfo.days_since_venue);
       $("span.days-since-state").text(thisObjInfo.days_since_state);
-    });
+    }
 
   }
 
