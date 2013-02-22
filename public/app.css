@@ -93,3 +93,77 @@ path {
 .music-tour-timeline-arrow:hover {
   color: #388ee8;
 }
+
+.music-tour-event {
+  padding: 10px;
+  height: 110px;
+  display: block;
+  text-decoration: none;
+}
+.music-tour-event:nth-child(2n) {
+  background-color: #F6F9FB;
+}
+.music-tour-event-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 100px;
+  border: 4px double #CCC;
+  float: left;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+}
+.music-tour-event-image-container {
+  width: 106px;
+  height: 106px;
+  position: relative;
+}
+.music-tour-event-image-container:hover small {
+  width: 106px;
+  height: 106px;
+  display: block;
+}
+.music-tour-event-image-container small span {
+  width: 106px;
+  height: 106px;
+  background-color: white;
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  border-radius: 10px;
+  top: 50px;
+  left: 50px;
+}
+.music-tour-event-image-container small {
+  width: 106px;
+  height: 106px;
+  border-radius: 100px;
+  position: absolute;
+  left: 1px;
+  top: 1px;
+  /*background: url(photo_hover.png) no-repeat left top;*/
+  display: none;
+  z-index: 1;
+  /* Fallback for web browsers that don't support RGBa */
+  background-color: rgba(54, 88, 179);
+  /* RGBa with 0.6 opacity */
+  background-color: rgba(54, 88, 179, 0.6);
+}
+
+.music-tour-event-title {
+  margin: 25px 0 0 140px;
+  font-size: 22px;
+}
+.music-tour-event-info {
+  color: #80C5FF;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+.music-tour-event-info:hover h3 {
+  color: #000000;
+}
+
+.music-tour-event-info p {
+  color: #333;
+  margin: 0 0 18px;
+  font-size: 16px;
+}

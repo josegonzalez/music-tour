@@ -10,6 +10,11 @@
     );
   };
 
+  _.templateSettings = {
+    interpolate : /\{\{(.+?)\}\}/g
+  };
+
+
   var input       = $("#search-input"),
       searchForm  = $('#search-form'),
       searchGhost = $("#search-ghost");
@@ -50,6 +55,7 @@
   MT.fire = function(slug) {
     if (MT.svg) MT.clearPage();
     $("svg").remove();
+    $(".music-tour-events .center").empty();
     var t = _.template($(".template-timeline").html());
     $(".music-tour-map-container .center").html(t());
 
@@ -79,6 +85,9 @@
       .defer(d3.jsonp, "http://api.seatgeek.com/2/events?performers.slug=" + slug + "&per_page=" + MT.max_events + "&callback={callback}")
       .await(function(error, us, data) {
           // ERROR DETECTION
+
+          MT.addEvents(data.events);
+
           MT.pages = data.events.chunk(MT.chunk_size);
           MT.total_pages = MT.pages.length;
 
@@ -110,6 +119,43 @@
           // draw the first page (initialized to 0)
           MT.nextPage();
         });
+  };
+
+  MT.addEvents = function(events) {
+    var t = _.template($(".template-event").html()),
+        $el = $(".music-tour-events .center"),
+        urlPieces = _.map(_.map(events, function(evt) { return evt.performers[0].id; }), function(performer, index) {
+          return "&id=" + performer;
+        }),
+        url = "http://api.seatgeek.com/2/performers?callback=addEvents" + urlPieces.join("");
+    $el.empty();
+
+    $.ajax({
+      url: url,
+      dataType: "jsonp",
+      success: function(data) {
+        console.log(data);
+        events.forEach(function(evt, index) {
+          performer_id = evt.performers[0].id;
+          performer = _.find(data.performers, function(p) { return p.id == performer_id; });
+          spotify = _.find(performer.links, function(link) { return link.provider == "spotify"; });
+          $el.append(t({event: evt, index: index, spotify: spotify}));
+        });
+
+        $(".music-tour-event-image-container").popover({
+          html: true,
+          placement: "top",
+          content: function() {
+            var spotify_id = $(this).attr("spotify");
+            if (spotify_id) {
+              return '<iframe src="https://embed.spotify.com/?uri=' + spotify_id + '" width="250" height="80" frameborder=0 scrolling="no" marginwidth=0 marginheight=0 allowtransparency="true"></iframe>';
+            } else {
+              return "Sorry, no song available for this artist";
+            }
+          }
+        });
+      }
+    });
   };
 
   MT.clearPage = function() {
@@ -358,9 +404,6 @@
       return "<a href='http://seatgeek.com/" + o.slug + "-tickets'>" + o.short_name + "</a>";
     });
 
-    _.templateSettings = {
-      interpolate : /\{\{(.+?)\}\}/g
-    };
     var t = _.template($(".template-seo").html());
     $(".music-tour-seo .center").html(t({opener: openerHtml, info: thisObjInfo}));
   };

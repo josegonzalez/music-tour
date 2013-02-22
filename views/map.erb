@@ -30,6 +30,11 @@
 	</div>
 </div>
 
+<div class="music-tour-events">
+  <div class="center">
+  </div>
+</div>
+
 <script type="text/template" class="template-seo">
 	<h3>Key Stats</h3>
 	<p>Opener(s):&nbsp;
@@ -49,4 +54,26 @@
 			<a class="music-tour-timeline-arrow music-tour-forward" style="float: right">forward&raquo;</a>
 		</div>
 	</div>
+</script>
+
+<script type="text/template" class="template-event">
+  <div class="music-tour-event music-tour-event-{{ event.id }}">
+    <span class="music-tour-event-image-container" spotify="{{ spotify ? spotify.id : "" }}">
+      <small><span></span></small>
+      <img src="{{ event.performers[0].images['huge'] }}" alt="{{ event.title }}" class="music-tour-event-image">
+      <a a href="{{ event.url }}" class="music-tour-event-info">
+        <h3 title="{{ event.title }}" class="music-tour-event-title">
+          {{ event.title }}
+          <p>
+            <span class="music-tour-event-datetime">
+              <span class="daystring">January 6</span> at <span class="timestring">TBD</span>
+            </span>
+            <span class="music-tour-event-location">
+              <span title="Rose Bowl">{{ event.venue.name }}</span>, {{ event.venue.city }}, {{ event.venue.state }}
+            </span>
+          </p>
+        </h3>
+      </a>
+    </span>
+  </div>
 </script>
