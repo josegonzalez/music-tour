@@ -92,12 +92,12 @@
         events.forEach(function(e, index) {
           var obj = {};
 
-          var openers = _.map(e.performers, function(p) { 
+          var openers = _.map(e.performers, function(p) {
             return {
               "id": p.id,
               "short_name": p.short_name,
               "slug": p.slug
-            }; 
+            };
           });
           openers.shift();
 
@@ -111,12 +111,12 @@
 
           var lastDateState = daysSinceState = "never";
           for (var key in data.states) {
-            if (key == e.venue.state) { 
+            if (key == e.venue.state) {
               lastDateState = data.states[key].date;
               daysSinceState = Math.round((new Date() - Date.parse(lastDateState))/(24*60*60*1000));
             }
           }
-          
+
           var obj = {
             "event_id": e.id,
             "performer_slug": e.performers[0].slug,
@@ -130,7 +130,7 @@
             "days_since_state": daysSinceState,
             "openers": openers
           };
-          
+
           $("[data-eventid='" + e.id + "'], svg path.points.event-" + e.id + ", svg text.place-label.event-" + e.id).data("info", obj);
         });
       },
