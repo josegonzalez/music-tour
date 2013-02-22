@@ -1,0 +1,102 @@
+body {
+  background: #FFF;
+  font-family: 'PT Sans', Helvetica, Arial, sans-serif;
+  margin: 0;
+}
+
+.center {
+  width: 830px;
+  margin: 0 auto;
+}
+
+a {
+  color: #00a5f2;
+  text-decoration: none;
+}
+a:hover { color: #005278; }
+
+
+/* Sections */
+
+/* 1. Header and copy */
+.header {
+  background: #303030;
+  padding: 40px 20px;
+  color: #FFF;
+}
+.header .center {
+  position: relative;
+  z-index: 2;
+}
+.header h1 {
+  font-size: 60px;
+  font-weight: 100;
+  padding: 0;
+  margin: 0 0 20px 220px;
+}
+.header h1 .logo {
+  color: #000;
+  display: inline-block;
+  font-size: 12px;
+  background: url(http://seatgeek.com/images/sg-play-widget/promo/logo.png) top left no-repeat;
+  margin: 5px 0 -5px;
+  padding: 7px 0 11px 110px;
+  position: absolute;
+  text-decoration: none;
+  left:40px;
+  top: 20px;
+  -webkit-filter: invert(100%);
+}
+.header p {
+  font-size: 15px;
+  font-weight: 100;
+  line-height: 23px;
+}
+.header .sg-rdio-widget {
+  position: absolute;
+  top: -10px;
+  right: 0;
+}
+
+/* 2. Mapping Interface */
+.music-tour-map-container {
+  padding: 15px 20px;
+}
+
+/* 3. Music Key SEO */
+.music-tour-seo {
+  background: #f2f2f2;
+  padding: 30px 20px 60px;
+}
+.music-tour-seo strong { color: #555; }
+.music-tour-seo h3 {
+  color: #3F3F41;
+  font-weight: 600;
+  font-size: 18px;
+}
+.music-tour-seo p {
+  color: #333333;
+  font-size: 14px;
+}
+.music-tour-openers a {
+  color: #3F3F41;
+}
+.music-tour-openers a:hover {
+  text-decoration: underline;
+}
+
+/* 4. Features */
+.the-blue {
+  background: #0078b0;
+  padding: 40px 20px;
+  color: #FFF;
+  font-weight: 100;
+}
+
+/* 5. Footer */
+.footer {
+  background: #000;
+  padding: 40px 20px;
+  color: #FFF;
+  font-size: 15px;
+}
