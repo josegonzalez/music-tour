@@ -11,7 +11,6 @@
   };
 
   var pages = {},
-      current_page = 0,
       chunk_size = 7,
       max_events = 20,
       total_pages = 0,
@@ -46,6 +45,7 @@
       .await(ready);
 
   window.MT = window.MT || {};
+  MT.current_page = 0;
 
   function ready(error, us, data) {
     pages = data.events.chunk(chunk_size);
@@ -78,36 +78,27 @@
       .remove();
   };
 
-  MT.daysSince = function(d) {
-    return Math.round((new Date() - Date.parse(d))/(24*60*60*1000));
-  };
-
-  MT.pixelShift = function(datetime_local, first_date, timespan) {
-    var date_shift = (Date.parse(datetime_local) - first_date) / timespan,
-        buffer_width = 300;
-        pixels = ($(".music-tour-timeline").width() - buffer_width) * date_shift - 16 + (0.5 * buffer_width);
-    return Math.round(pixels);
-  };
-
   MT.nextPage = function() {
-    if (current_page < total_pages) {
-      current_page++;
-      MT.drawPage(current_page);
+    if (MT.current_page < total_pages) {
+      MT.current_page++;
+      MT.drawPage(MT.current_page);
     }
   };
 
   MT.previousPage = function() {
-    if (current_page > 1) {
+    if (MT.current_page > 1) {
+      active_last = true;
       MT.current_page--;
-      MT.drawPage(current_page);
+      MT.drawPage(MT.current_page, active_last);
     }
   };
 
-  MT.drawPage = function(page) {
+  MT.drawPage = function(page, active_last) {
+    active_last = active_last || false;
     MT.clearPage();
 
     var events = pages[page - 1],
-        index_start = (current_page - 1) * chunk_size,
+        index_start = (MT.current_page - 1) * chunk_size,
         firstDate = Date.parse(events[0].datetime_local),
         timespan = Date.parse(events.last().datetime_local) - firstDate;
 
@@ -121,31 +112,11 @@
 
     MT.getSeoData(events);
 
-    function tooltip(d, index) {
-      var that = $(d3.select(this)),
-          coords = _.extend({}, [d.venue.location.lon, d.venue.location.lat]),
-          isFromSvg = $(d3.event.fromElement).is("svg"),
-          isFromPath = $(d3.event.fromElement).is("path"),
-          isToPath = $(d3.event.toElement).is("path");
-
-      that.tooltip({
-        container: "body",
-        html: true,
-        placement: (coords[0] > -100 ? "left" : "right"),
-        title: [
-          // '<div class="music-tour-stop">this stop</div>'
-          '<div class="music-tour-info">' + d.venue.city + ', ' + d.venue.state + '</div>',
-          '<div class="music-tour-info">' + d.venue.name + '</div>'
-        ].join("\n")});
-
-      if (isFromSvg || (isFromPath && isToPath)) that.tooltip("show");
-    }
-
     var group = svg.selectAll(".music-tour-events").data(events).enter()
                     .append("g")
                     .attr("data-event-id", function(d, index) { return d.id; })
                     .attr("class", function(d) { return "music-tour-events event-" + d.id; } )
-                    .on("mouseover", tooltip);
+                    .on("mouseover", MT.tooltip);
 
     group.append("path")
       .attr("class", function(d, index) { return "music-tour-points event-" + d.id; })
@@ -172,53 +143,100 @@
     $(".music-tour-timeline-arrow").click(function(e) {
       e.preventDefault();
       var direction = $(this).hasClass("music-tour-forward") ? "forward" : $(this).hasClass("music-tour-backward") ? "backward" : "";
-      shiftActivePoint(direction);
+      MT.shiftActivePoint(direction, events);
     });
 
     // do things on mouseenter of timeline points
     $(".music-tour-timeline-points").mouseenter(function() {
-      var oldZ = $(this).css("z-index");
-      MT.activatePoints($(this).attr("data-event-id"), oldZ);
-      MT.writeSeoData($(this).data("info"));
+      MT.reactivatePoints($(this), $(this).css("z-index"));
     });
 
     // do things on mouseenter of map points
-    $("svg .music-tour-label, svg .music-tour-points").hover(function() {
-      MT.activatePoints($(this).attr("data-event-id"));
-      MT.writeSeoData($(this).data("info"));
+    $(".music-tour-label, .music-tour-points").hover(function() {
+      MT.reactivatePoints($(this));
     });
+  };
 
-    function shiftActivePoint(fwdOrBkwd) {
-      var x = (fwdOrBkwd == "forward") ? 1 : "backward" ? -1 : 0;
-      var o = findIndexOfActivePoint();
-      console.log(x);
-      console.log(o);
-      switch(x + o.active_index) {
-        case chunk_size:
-          MT.nextPage();
-          break;
-        case -1:
-          MT.previousPage();
-          break;
-        default:
-          MT.activatePoints(o.event_ids[o.active_index + x]);
-      }
-    }
+  MT.tooltip = function(d, index) {
+    var that = $(d3.select(this)),
+        coords = _.extend({}, [d.venue.location.lon, d.venue.location.lat]),
+        isFromSvg = $(d3.event.fromElement).is("svg"),
+        isFromPath = $(d3.event.fromElement).is("path"),
+        isToPath = $(d3.event.toElement).is("path");
 
-    function findIndexOfActivePoint() {
-      var activeId = $(".music-tour-timeline-points.active").data("event-id");
-      var eventIds = _.pluck(events, "id");
+    that.tooltip({
+      container: "body",
+      html: true,
+      placement: (coords[0] > -100 ? "left" : "right"),
+      title: [
+        // '<div class="music-tour-stop">this stop</div>'
+        '<div class="music-tour-info">' + d.venue.city + ', ' + d.venue.state + '</div>',
+        '<div class="music-tour-info">' + d.venue.name + '</div>'
+      ].join("\n")});
 
-      return {
-        "active_index": eventIds.indexOf(activeId),
-        "event_ids": eventIds
-      };
+    if (isFromSvg || (isFromPath && isToPath)) that.tooltip("show");
+  };
+
+  MT.shiftActivePoint = function(direction, events) {
+    var x = (direction == "forward") ? 1 : "backward" ? -1 : 0;
+    var index = MT.currentActiveIndex(events);
+    switch(x + index) {
+      case chunk_size:
+        MT.nextPage();
+        break;
+      case -1:
+        MT.previousPage();
+        break;
+      default:
+        if (direction == "forward") {
+          next = MT.nextActiveIndex(events);
+          if (_.isNumber(next)) MT.activatePoints(next);
+        } else {
+          previous = MT.previousActiveIndex(events);
+          if (_.isNumber(previous)) MT.activatePoints(previous);
+        }
     }
   };
 
-  MT.activatePoints = function(eventId, oldZ) {
-    if (typeof oldZ !== 'undefined') {
-      $(".music-tour-timeline-points.active").css("z-index", oldZ);
+  MT.currentEventId = function() {
+    return $(".music-tour-timeline-points.active").data("event-id");
+  };
+
+  MT.currentActiveIndex = function(events) {
+    var event_ids = _.pluck(events, "id");
+    return event_ids.indexOf(MT.currentEventId());
+  };
+
+  MT.nextActiveIndex = function(events) {
+    var event_ids = _.pluck(events, "id");
+    return event_ids[MT.currentActiveIndex(events) + 1];
+  };
+
+  MT.previousActiveIndex = function(events) {
+    var event_ids = _.pluck(events, "id");
+    return event_ids[MT.currentActiveIndex(events) - 1];
+  };
+
+  MT.daysSince = function(d) {
+    return Math.round((new Date() - Date.parse(d))/(24*60*60*1000));
+  };
+
+  MT.pixelShift = function(datetime_local, first_date, timespan) {
+    var date_shift = (Date.parse(datetime_local) - first_date) / timespan,
+        buffer_width = 300;
+        pixels = ($(".music-tour-timeline").width() - buffer_width) * date_shift - 16 + (0.5 * buffer_width);
+    return Math.round(pixels);
+  };
+
+
+  MT.reactivatePoints = function($that, zindex) {
+    MT.activatePoints($that.attr("data-event-id"), zindex);
+    MT.writeSeoData($that.data("info"));
+  };
+
+  MT.activatePoints = function(eventId, zindex) {
+    if (typeof zindex !== 'undefined') {
+      $(".music-tour-timeline-points.active").css("z-index", zindex);
     }
 
     // first deactivate all points
