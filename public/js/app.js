@@ -184,6 +184,8 @@
   };
 
   MT.nextPage = function() {
+    if (MT.current_page > 0) { $(".music-tour-backward").show(); }
+    if (MT.current_page == MT.total_pages - 1) { $(".music-tour-forward").hide(); }
     if (MT.current_page < MT.total_pages) {
       MT.current_page++;
       MT.drawPage(MT.current_page);
@@ -191,10 +193,12 @@
   };
 
   MT.previousPage = function() {
+    if (MT.current_page <= 2) { $(".music-tour-backward").hide(); }
     if (MT.current_page > 1) {
       active_last = true;
       MT.current_page--;
       MT.drawPage(MT.current_page, active_last);
+      $(".music-tour-forward").show();
     }
   };
 

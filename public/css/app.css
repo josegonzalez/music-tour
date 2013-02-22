@@ -79,6 +79,7 @@ path {
   position: relative;
 }
 .music-tour-backward {
+  display: none;
   position: absolute;
   z-index: 2;
 }
