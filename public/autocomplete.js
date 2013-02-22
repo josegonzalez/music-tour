@@ -8,7 +8,6 @@ function initiateAutocomplete() {
         delay: 125,
         parent: jQuery('.search-form, .search-structure'),
         see_all: false,
-        top: false,
         select:    function(item) {
           var slug = item.attr("href").replace("/", "").replace("-tickets/", "");
           MT.fire(slug);
