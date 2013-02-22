@@ -93,6 +93,7 @@
 
           if (data.events.length === 0) {
             // No events, error
+            $(".music-tour-map-container .center").html('<img src="/img/ya-dun-goofed.jpg" class="ya-done-goofed" />');
             return;
           }
 
