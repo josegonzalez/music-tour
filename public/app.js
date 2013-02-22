@@ -38,13 +38,15 @@
 
 
   window.MT = window.MT || {};
-  MT.current_page = 0;
 
   MT.fire = function(slug) {
     if (MT.svg) MT.clearPage();
     $("svg").remove();
+    var t = _.template($(".template-timeline").html());
+    $(".music-tour-map-container .center").html(t());
 
     MT.pages = {};
+    MT.current_page = 0;
     MT.chunk_size = 7;
     MT.max_events = 20;
     MT.total_pages = 0;
@@ -63,15 +65,6 @@
         .projection(MT.projection)
         .pointRadius(1.5);
 
-    MT.svg = d3.select(".music-tour-map").append("svg")
-        .attr("viewBox", "0 0 " + MT.width + " " + MT.height)
-        .attr("width", MT.width)
-        .attr("height", MT.height);
-
-    MT.svg.append("filter")
-        .attr("id", "glow")
-      .append("feGaussianBlur")
-        .attr("stdDeviation", 5);
 
     queue()
       .defer(d3.json, "/us.json")
@@ -80,6 +73,16 @@
           // ERROR DETECTION
           MT.pages = data.events.chunk(MT.chunk_size);
           MT.total_pages = MT.pages.length;
+
+          MT.svg = d3.select(".music-tour-map").append("svg")
+              .attr("viewBox", "0 0 " + MT.width + " " + MT.height)
+              .attr("width", MT.width)
+              .attr("height", MT.height);
+
+          MT.svg.append("filter")
+              .attr("id", "glow")
+            .append("feGaussianBlur")
+              .attr("stdDeviation", 5);
 
           // translucent outer glow
           var land = MT.svg.selectAll(".land")
@@ -102,6 +105,7 @@
   };
 
   MT.clearPage = function() {
+    $(".music-tour-seo .center").empty();
     $(".music-tour-timeline-points").remove();
     MT.svg.selectAll(".music-tour-events")
       .data([])
@@ -345,12 +349,12 @@
     var openerHtml = _.map(thisObjInfo.openers, function(o, i) {
       return "<a href='http://seatgeek.com/" + o.slug + "-tickets'>" + o.short_name + "</a>";
     });
-    $(".music-tour-openers").html(openerHtml.join(", "));
-    $(".music-tour-performer-name").text(thisObjInfo.performer_short_name);
-    $(".music-tour-venue-name").text(thisObjInfo.venue_name);
-    $(".music-tour-state-name").text(thisObjInfo.venue_state);
-    $(".music-tour-days-since-venue").text(thisObjInfo.days_since_venue);
-    $(".music-tour-days-since-state").text(thisObjInfo.days_since_state);
+
+    _.templateSettings = {
+      interpolate : /\{\{(.+?)\}\}/g
+    };
+    var t = _.template($(".template-seo").html());
+    $(".music-tour-seo .center").html(t({opener: openerHtml, info: thisObjInfo}));
   };
 
   MT.states = {
