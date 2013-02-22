@@ -137,12 +137,15 @@
       return "&venues[" + index + "][state]=" + e.venue.state + "&venues[" + index + "][id]=" + e.venue.id;
     });
 
-    var seoUrl = seoUrl + urlPieces.join("");
+    seoUrl = seoUrl + urlPieces.join("");
     $.ajax({
       url: seoUrl,
       success: function(data) {
         events.forEach(function(e, index) {
-          var obj = {};
+          var lastDateVenue = "never",
+              daysSinceVenue = "never",
+              lastDateState = "never",
+              daysSinceState = "never";
 
           var openers = _.map(e.performers, function(p) {
             return {
@@ -153,18 +156,16 @@
           });
           openers.shift();
 
-          var lastDateVenue = daysSinceVenue = "never";
-          for (var key in data.venue) {
-            if (key == e.venue.id) {
-              lastDateVenue = data.venue[key].date;
+          for (var venue_id in data.venue) {
+            if (venue_id == e.venue.id) {
+              lastDateVenue = data.venue[venue_id].date;
               daysSinceVenue = Math.round((new Date() - Date.parse(lastDateVenue))/(24*60*60*1000));
             }
           }
 
-          var lastDateState = daysSinceState = "never";
-          for (var key in data.states) {
-            if (key == e.venue.state) {
-              lastDateState = data.states[key].date;
+          for (var state in data.states) {
+            if (state == e.venue.state) {
+              lastDateState = data.states[state].date;
               daysSinceState = Math.round((new Date() - Date.parse(lastDateState))/(24*60*60*1000));
             }
           }
@@ -183,11 +184,11 @@
             "openers": openers
           };
 
-          if (index == 0) {
+          if (index === 0) {
             activatePoints(e.id);
             writeSeoData(obj);
           }
-          
+
           // attach seo data object to relevant points and point labels for getting later on mouseover
           $(".timeline-points[data-eventid='" + e.id + "'], svg path.points.event-" + e.id + ", svg text.place-label.event-" + e.id).data("info", obj);
         });
@@ -220,9 +221,8 @@
     }
 
     function writeSeoData(thisObjInfo) {
-      var thisObjInfo = thisObjInfo;
       var openerHtml = _.map(thisObjInfo.openers, function(o, i) {
-        return "<a href='http://seatgeek.com/" + o.slug + "-tickets'>" + o.short_name + "</a>"
+        return "<a href='http://seatgeek.com/" + o.slug + "-tickets'>" + o.short_name + "</a>";
       });
       $("span.openers").html(openerHtml.join(", "));
       $("span.performer-name").text(thisObjInfo.performer_short_name);
