@@ -94,6 +94,10 @@ path {
   color: #388ee8;
 }
 
+.music-tour-events .center {
+  padding: 20px 0;
+}
+
 .music-tour-event {
   padding: 10px;
   height: 110px;

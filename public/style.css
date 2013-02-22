@@ -169,6 +169,15 @@ form .search-ghost {
 .music-tour-map-container {
   padding: 15px 20px;
 }
+.music-tour-map-container .center {
+  min-height: 700px;
+}
+.music-tour-map-container h2 {
+  font-size: 40px;
+  font-weight: 100;
+  margin-left: 150px;
+  margin-top: 20px;
+}
 
 /* 3. Music Key SEO */
 .music-tour-seo {

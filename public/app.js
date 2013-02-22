@@ -55,7 +55,7 @@
   MT.fire = function(slug) {
     if (MT.svg) MT.clearPage();
     $("svg").remove();
-    $(".music-tour-events .center").empty();
+    $(".music-tour-events").remove();
     var t = _.template($(".template-timeline").html());
     $(".music-tour-map-container .center").html(t());
 
@@ -123,18 +123,17 @@
 
   MT.addEvents = function(events) {
     var t = _.template($(".template-event").html()),
-        $el = $(".music-tour-events .center"),
         urlPieces = _.map(_.map(events, function(evt) { return evt.performers[0].id; }), function(performer, index) {
           return "&id=" + performer;
         }),
         url = "http://api.seatgeek.com/2/performers?callback=addEvents" + urlPieces.join("");
-    $el.empty();
 
     $.ajax({
       url: url,
       dataType: "jsonp",
       success: function(data) {
-        console.log(data);
+        $(".the-blue").before('<div class="music-tour-events"><div class="center"></div></div>');
+        var $el = $(".music-tour-events .center");
         events.forEach(function(evt, index) {
           performer_id = evt.performers[0].id;
           performer = _.find(data.performers, function(p) { return p.id == performer_id; });
@@ -159,7 +158,7 @@
   };
 
   MT.clearPage = function() {
-    $(".music-tour-seo .center").empty();
+    $(".music-tour-seo").remove();
     $(".music-tour-timeline-points").remove();
     MT.svg.selectAll(".music-tour-events")
       .data([])
@@ -405,7 +404,7 @@
     });
 
     var t = _.template($(".template-seo").html());
-    $(".music-tour-seo .center").html(t({opener: openerHtml, info: thisObjInfo}));
+    $(".music-tour-map-container").after(t({opener: openerHtml, info: thisObjInfo}));
   };
 
   MT.states = {
