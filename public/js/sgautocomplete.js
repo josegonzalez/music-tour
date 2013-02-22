@@ -36,7 +36,7 @@
                     e.preventDefault();
                   }
                   $(".search-input").val(document.getElementsByClassName("sgautocomplete-result")[that.focus].children[0].innerHTML);
-                  MT.artistSlug = ($(document.getElementsByClassName("sgautocomplete-result")[that.focus]).attr("href").replace("/", "").replace("-tickets/", ""));
+                  MT.artistSlug(($(document.getElementsByClassName("sgautocomplete-result")[that.focus]).attr("href").replace("/", "").replace("-tickets/", "")));
                 case keyCode.TAB:
                   if (!that.menu.is(":visible")) {
                     return;
@@ -249,7 +249,7 @@
             }
             that.select($(this));
             $(".search-input").val(($(this).children(".sgautocomplete-result-title").text()));
-            MT.artistSlug = $(this).attr("href").replace("/", "").replace("-tickets/", "");
+            MT.artistSlug($(this).attr("href").replace("/", "").replace("-tickets/", ""));
           })
           .attr("href", item.data.url)
           .attr("rel", item.id ? item.id : null)
