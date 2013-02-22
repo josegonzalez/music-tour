@@ -88,9 +88,8 @@
           projectedCoords = projection(coords),
           dateShift = (Date.parse(evt.datetime_local) - firstDate)/timespan,
           bufferWidth = 300,
-          classes = index ? "timeline-points" : "timeline-points active",
           pixelShift = ($("#timeline").width() - bufferWidth) * dateShift - 16 + (0.5 * bufferWidth);
-          html = "<div class='" + classes + "' style='margin-left: " + Math.round(pixelShift) + "px; z-index:" + (20-index) + "' data-eventid='" + evt.id + "'>" + (index + 1) + "</div>";
+          html = "<div class='timeline-points' style='margin-left: " + Math.round(pixelShift) + "px; z-index:" + (20-index) + "' data-eventid='" + evt.id + "'>" + (index + 1) + "</div>";
 
       $("#timeline-points").append(html);
 
@@ -168,41 +167,41 @@
             "openers": openers
           };
 
-          if (index == 0) { writeSeoData(obj); }
+          if (index == 0) {
+            activatePoints(e.id);
+            writeSeoData(obj);
+          }
           
           // attach seo data object to relevant points and point labels for getting later on mouseover
-          $("[data-eventid='" + e.id + "'], svg path.points.event-" + e.id + ", svg text.place-label.event-" + e.id).data("info", obj);
+          $(".timeline-points[data-eventid='" + e.id + "'], svg path.points.event-" + e.id + ", svg text.place-label.event-" + e.id).data("info", obj);
         });
       },
       dataType: "jsonp"
     });
 
-    // activate stuff on mouseenter of timeline points
+    // do things on mouseenter of timeline points
     $(".timeline-points").mouseenter(function() {
-      $(".timeline-points").removeClass("active");
-      $(this).addClass("active");
-
-      $("svg path.points").each(function() {
-        $(this).attr("class", $(this).attr("class").replace(" active", ""));
-      });
-      var thisMapPoint = $("svg path.points.event-" + $(this).attr("data-eventid"));
-      thisMapPoint.attr("class", thisMapPoint.attr("class") + " active");
-
+      activatePoints($(this).attr("data-eventid"));
       writeSeoData($(this).data("info"));
     });
 
-    // activate stuff on mouseenter of map points
+    // do things on mouseenter of map points
     $("svg text.place-label, svg path.points").hover(function() {
+      activatePoints($(this).attr("data-eventid"));
+      writeSeoData($(this).data("info"));
+    });
+
+    function activatePoints(eventId) {
+      // first deactivate all points
       $("svg path.points, .timeline-points").each(function() {
         $(this).attr("class", $(this).attr("class").replace(" active",""));
       });
-      var thisMapPoint = $(".points.event-" + $(this).attr("data-eventid"));
-      thisMapPoint.attr("class", thisMapPoint.attr("class") + " active");
-      var thisTimelinePoint = $(".timeline-points[data-eventid='" + $(this).attr("data-eventid") + "']");
-      thisTimelinePoint.attr("class", thisTimelinePoint.attr("class") + " active");
 
-      writeSeoData($(this).data("info"));
-    });
+      // then activate the correct point on the timeline & map
+      $(".timeline-points[data-eventid='" + eventId + "'], svg path.points.event-" + eventId).each(function() {
+        $(this).attr("class", $(this).attr("class") + " active");
+      });
+    }
 
     function writeSeoData(thisObjInfo) {
       var thisObjInfo = thisObjInfo;
