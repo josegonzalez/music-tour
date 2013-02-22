@@ -215,8 +215,9 @@
       writeSeoData($(this).data("info"));
     });
 
-    $(".timeline-arrow").click(function() {
-      shiftActivePoint($(this).attr("id"));
+    $(".music-tour-timeline-arrow").click(function() {
+      var direction = $(this).hasClass("music-tour-forward") ? "forward" : $(this).hasClass("music-tour-backward") ? "backward" : "";
+      shiftActivePoint(direction);
     });
 
 
@@ -227,7 +228,7 @@
     }
 
     function findIndexOfActivePoint() {
-      var activeId = $(".timeline-points.active").data("eventid");
+      var activeId = $(".music-tour-timeline-points.active").data("eventid");
       var eventIds = _.pluck(events, "id");
       return {
         "active_index": eventIds.indexOf(activeId),
