@@ -39,7 +39,7 @@ a:hover { color: #005278; }
 
 /* 1. Header and copy */
 .header {
-  background: #303030;
+  background: #303030 url(head-center.jpg) 0 0 no-repeat;
   padding: 40px 20px;
   color: #FFF;
 }
