@@ -266,7 +266,6 @@
     $(".music-tour-timeline-points")
       .mouseenter(
         function() {
-          //console.log($($("g.event-" + $(this).attr("data-event-id"))));
           d3.selectAll("g.event-" + ($(this).attr("data-event-id"))).each(function(d, i) { MT.tooltip.apply(this, [d, i]); });
         }
       )
