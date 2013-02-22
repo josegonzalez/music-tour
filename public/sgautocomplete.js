@@ -35,6 +35,7 @@
                   if (that.menu.is(":visible") && that.focus && that.focus > 0) { // just let the form submit for the first item
                     e.preventDefault();
                   }
+                  $(".search-input").val(document.getElementsByClassName("sgautocomplete-result")[that.focus].children[0].innerHTML);
                 case keyCode.TAB:
                   if (!that.menu.is(":visible")) {
                     return;
@@ -246,6 +247,7 @@
               e.preventDefault();
             }
             that.select($(this));
+            $(".search-input").val(($(this).children(".sgautocomplete-result-title").text()));
           })
           .attr("href", item.data.url)
           .attr("rel", item.id ? item.id : null)
