@@ -19,18 +19,6 @@
         var html = "<div class='" + classes + "' style='margin-left: " + Math.round(pixelShift) + "px' data-eventid='" + events[i].id + "'>" + (i + 1) + "</div>";
         $("div#timeline-points").append(html);
       }
-
-      $("div.timeline-points").mouseenter(function() {
-        $("div.timeline-points").removeClass("active");
-        $(this).addClass("active");
-        
-        var eventId = $(this).attr("data-eventid");
-        console.log("eventid = " + eventId);
-        $("path.points").each(function() {
-          $(this).attr("class", $(this).attr("class").replace(" active",""));
-        });
-        $("path.points.event-" + eventId).attr("class", $("path.points.event-" + eventId).attr("class") + " active");
-      });
     },
     dataType: 'jsonp'}
   );
@@ -91,26 +79,42 @@
       svg.append("path")
         .datum({type: "MultiPoint", coordinates: [coords]})
         .attr("class", "points event-" + evt.id)
+        .attr("data-eventid", evt.id)
         .attr("d", path.pointRadius(function(d) { return unselected_radius; }));
 
        svg.append("text")
-          .attr("class", "place-label event-" + evt.id)
-          .attr("event_id", evt.id)
-          .attr("transform", function(d) { return "translate(" + projection(coords) + ")"; })
-          .attr("x", function(d) { return coords[0] > -1 ? (il > 1 ? 12 : 6) : (il > 1 ? -12 : -6); })
-          .attr("y", function(d) { return coords[1] > -1 ? 1 : -1; })
-          .attr("dy", ".35em")
-          .text(function(d) { return index + 1; });
+        .attr("class", "place-label event-" + evt.id)
+        .attr("data-eventid", evt.id)
+        .attr("transform", function(d) { return "translate(" + projection(coords) + ")"; })
+        .attr("x", function(d) { return coords[0] > -1 ? (il > 1 ? 12 : 6) : (il > 1 ? -12 : -6); })
+        .attr("y", function(d) { return coords[1] > -1 ? 1 : -1; })
+        .attr("dy", ".35em")
+        .text(function(d) { return index + 1; });
     });
 
-    $("svg .place-label").mouseenter(function() {
-      var $el = $(".points.event-" + $(this).attr("event_id"));
-      $el.attr("class", $el.attr("class") + " active");
-    },
-    function() {
-      var $el = $(".points.event-" + $(this).attr("event_id"));
-      $el.attr("class", $el.attr("class").replace(" active", ""));
+    //on mouseenter of timeline point, activate the timeline point + corresponding map point
+    $("div.timeline-points").mouseenter(function() {
+      $("div.timeline-points").removeClass("active");
+      $(this).addClass("active");
+      
+      $("svg path.points").each(function() {
+        $(this).attr("class", $(this).attr("class").replace(" active",""));
+      });
+      var thisMapPoint = $("svg path.points.event-" + $(this).attr("data-eventid"));
+      thisMapPoint.attr("class", thisMapPoint.attr("class") + " active");
     });
+
+    //on mouseenter of map point label, activate the map point + corresponding timeline point
+    $("svg text.place-label, svg path.points").hover(function() {
+      $("svg path.points, div.timeline-points").each(function() {
+        $(this).attr("class", $(this).attr("class").replace(" active",""));
+      });
+      var thisMapPoint = $(".points.event-" + $(this).attr("data-eventid"));
+      thisMapPoint.attr("class", thisMapPoint.attr("class") + " active");
+      var thisTimelinePoint = $("div.timeline-points[data-eventid='" + $(this).attr("data-eventid") + "']");
+      thisTimelinePoint.attr("class", thisTimelinePoint.attr("class") + " active");
+    });
+    
   }
 
 })();
