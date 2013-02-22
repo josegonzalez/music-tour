@@ -327,8 +327,8 @@
   };
 
   MT.pixelShift = function(datetime_local, first_date, timespan) {
-    var date_shift = (Date.parse(datetime_local) - first_date) / timespan,
-        buffer_width = 300;
+    var date_shift = (timespan == 0) ? 0.5 : (Date.parse(datetime_local) - first_date) / timespan,
+        buffer_width = 300,
         pixels = ($(".music-tour-timeline").width() - buffer_width) * date_shift - 16 + (0.5 * buffer_width);
     return Math.round(pixels);
   };
