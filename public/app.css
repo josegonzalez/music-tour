@@ -86,7 +86,7 @@ path {
 .music-tour-map {
   background-color: #fff;
   margin: auto;
-  padding-top: 20px;
+  padding: 20px 15px 0 15px;
   width: 100%;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
   -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
