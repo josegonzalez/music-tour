@@ -27,7 +27,6 @@
         $(this).addClass("active");
 
         var eventId = $(this).attr("data-eventid");
-        console.log("eventid = " + eventId);
         $("path.points").each(function() {
           $(this).attr("class", $(this).attr("class").replace(" active",""));
         });
