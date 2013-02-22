@@ -195,6 +195,8 @@ form .search-ghost {
   color: #3F3F41;
   font-weight: 600;
   font-size: 18px;
+  position: relative;
+  width: 105%;
 }
 .music-tour-seo p {
   color: #333333;
@@ -206,6 +208,30 @@ form .search-ghost {
 .music-tour-openers a:hover {
   text-decoration: underline;
 }
+
+/* Button Set */
+.button-set {
+  position: absolute;
+  right: 0;
+}
+.button-set a {
+  display: inline-block;
+  color: #FFF;
+  padding: 12px 20px 11px 50px;
+  margin: 0 9px 0 0;
+  font-size: 16px;
+  font-weight: 600;
+  background: #00a5f2 url(/img/icon-bookmark-this-page.png) 14px center no-repeat;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-transition: background .1s linear;
+     -moz-transition: background .1s linear;
+          transition: background .1s linear;
+}
+.button-set a:hover { background-color: #0080bb; }
+.button-set a.become-an-affiliate:hover { background-color: #555; }
+.button-set a:active { background-color: #000 !important; }
 
 /* 4. Features */
 .the-blue {
@@ -221,4 +247,34 @@ form .search-ghost {
   padding: 40px 20px;
   color: #FFF;
   font-size: 15px;
+}
+
+/* Embed popup */
+.embed-popup-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(50, 50, 50, .7);
+  z-index: 3;
+}
+.embed-popup {
+  background: #FFF;
+  padding: 30px;
+  width: 400px;
+  margin: 50px auto 0;
+}
+.embed-popup h2 {
+  font-weight: 100;
+  font-size: 25px;
+  margin: 0;
+  padding: 0;
+}
+.embed-popup textarea {
+  width: 398px;
+  height: 150px;
+}
+.embed-popup textarea.small {
+  height: 50px;
 }

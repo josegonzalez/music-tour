@@ -28,7 +28,12 @@
 <script type="text/template" class="template-seo">
 <div class="music-tour-seo">
   <div class="center">
-	<h3>Key Stats</h3>
+	<h3>
+    Key Stats
+    <span class="button-set">
+      <a href="#" class="bookmark-this-page" onclick="$('.embed-popup-container').show(); return false;">Bookmark this page</a>
+    </span>
+  </h3>
 	<p>Opener(s):&nbsp;
 		<span class="music-tour-openers">{{ opener.join(", ") }}</span><br/>
 		Days since <span class="music-tour-performer-name">{{ info.performer_short_name }}</span> was in <span class="music-tour-state-name">{{ info.venue_state }}</span>:&nbsp;

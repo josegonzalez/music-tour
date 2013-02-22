@@ -232,6 +232,7 @@
       .attr("data-event-id", function(d, index) { return d.id; })
       .datum(function(d, index) { return {type: "Point", coordinates: _.extend({}, [d.venue.location.lon, d.venue.location.lat])}; })
       .attr("d", MT.path.pointRadius(function(d) { return MT.unselected_radius; }));
+
     group.append("text")
       .attr("class", function(d, index) { return "music-tour-label event-" + d.id; })
       .attr("data-event-id", function(d, index) { return d.id; })
