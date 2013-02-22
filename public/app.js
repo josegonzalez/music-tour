@@ -56,8 +56,6 @@
     if (MT.svg) MT.clearPage();
     $("svg").remove();
     $(".music-tour-events").remove();
-    var t = _.template($(".template-timeline").html());
-    $(".music-tour-map-container .center").html(t());
 
     MT.pages = {};
     MT.current_page = 0;
@@ -91,6 +89,10 @@
             // No events, error
             return;
           }
+
+          // Setup the timeline
+          var t = _.template($(".template-timeline").html());
+          $(".music-tour-map-container .center").html(t());
 
           // Fix up the input box
           MT.artistName = data.events[0].performers[0].name;
