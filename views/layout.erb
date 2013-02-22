@@ -19,6 +19,7 @@
     <script src="jquery-ui-1.10.1.custom.min.js"></script>
     <script src="sgautocomplete.js"></script>
     <script src="autocomplete.js"></script>
+    <script src="konami.js"></script>
     <link rel="stylesheet" href="app.css" />
     <link rel="stylesheet" href="bootstrap.css" />
     <link rel="stylesheet" href="ui-autocomplete.css" />
@@ -36,13 +37,16 @@
 
         <!-- SeatGeek presents -->
         <h1><a href="http://seatgeek.com" alt="SeatGeek presents" class="logo">presents</a> <span>Music Tour Timelines</span></h1>
-        <p>Discover where your favorite artists will be playing with SeatGeek's new widget. Music Tours even allows you to come up with exciting shows to see on your own cross-country adventures. With the new Music Tours widget, users can hear samples of music, powered by <a href="http://spotify.com">Spotify</a>, and you can earn affiliate credit when your users purchase tickets.</p>
+        <p>Discover where your favorite artists will be playing with <a href="http://seatgeek.com">SeatGeek's</a> new widget. Music Tours even allows you to come up with exciting shows to see on your own cross-country adventures. With the new Music Tours widget, users can hear samples of music, powered by <a href="http://spotify.com">Spotify</a>, and you can earn affiliate credit when your users purchase tickets.</p>
       </div>
     </div>
 
 
     <!-- 4. Mapping Interface and Music Tour SEO -->
     <%= yield %>
+    <script type="text/javascript">
+      var konami = new Konami('/humans.lol/');
+    </script>
     <script src="app.js"></script>
 
     <!-- 4. Features -->
