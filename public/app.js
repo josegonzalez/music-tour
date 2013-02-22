@@ -64,6 +64,7 @@
     MT.total_pages = 0;
     MT.height = 500,
     MT.width = 790;
+    MT.artistSlug = slug;
 
     MT.radius = d3.scale.sqrt()
         .domain([0, 1e6])
@@ -80,7 +81,7 @@
 
     queue()
       .defer(d3.json, "/us.json")
-      .defer(d3.jsonp, "http://api.seatgeek.com/2/events?performers.slug=" + slug + "&per_page=" + MT.max_events + "&callback={callback}")
+      .defer(d3.jsonp, "http://api.seatgeek.com/2/events?performers.slug=" + MT.artistSlug + "&per_page=" + MT.max_events + "&callback={callback}")
       .await(function(error, us, data) {
           // Ensure that the results are all from the US
           data.events = _.filter(data.events, function(evt) { return evt.venue.country == "US"; });
