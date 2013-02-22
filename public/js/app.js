@@ -14,7 +14,6 @@
     interpolate : /\{\{(.+?)\}\}/g
   };
 
-
   var input       = $("#search-input"),
       searchForm  = $('#search-form'),
       searchGhost = $("#search-ghost");
@@ -411,7 +410,7 @@
 
           var obj = {
             "event_id": e.id,
-            //"event_date": e.datetime_local,
+            "event_date": e.datetime_local,
             "performer_slug": pri_performer.slug,
             "performer_short_name": pri_performer.short_name,
             "venue_id": e.venue.id,
