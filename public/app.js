@@ -84,10 +84,15 @@
       .defer(d3.json, "/us.json")
       .defer(d3.jsonp, "http://api.seatgeek.com/2/events?performers.slug=" + slug + "&per_page=" + MT.max_events + "&callback={callback}")
       .await(function(error, us, data) {
-          // ERROR DETECTION
-
           // Ensure that the results are all from the US
           data.events = _.filter(data.events, function(evt) { return evt.venue.country == "US"; });
+
+          if (data.events.length === 0) {
+            // No events, error
+            return;
+          }
+
+          input.blur();
 
           // Hack to ensure we can get SEO information
           MT.artistId = data.events[0].performers[0].id;
@@ -416,6 +421,17 @@
     $(".music-tour-map-container").after(t({opener: openerHtml, info: thisObjInfo}));
   };
 
+  MT.getParameterByName = function(name) {
+    name = name.replace(/[\[]/, "\\\\[").replace(/[\]]/, "\\\\]");
+    var regexS = "[\\?&]" + name + "=([^&#]*)";
+    var regex = new RegExp(regexS);
+    var results = regex.exec(window.location.search);
+    if (results) {
+      return decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+    return "";
+  };
+
   MT.states = {
     'AL': 'Alabama',
     'AK': 'Alaska',
@@ -469,5 +485,10 @@
     'WI': 'Wisconsin',
     'WY': 'Wyoming'
   };
+
+  if (MT.getParameterByName("performer")) {
+    MT.fire(MT.getParameterByName("performer"));
+  }
+
 
 })();
