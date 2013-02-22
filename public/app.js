@@ -45,122 +45,124 @@
       .defer(d3.jsonp, "http://api.seatgeek.com/2/events?performers.slug=jason-aldean&per_page=" + max_events + "&callback={callback}")
       .await(ready);
 
+  window.MT = window.MT || {};
+
   function ready(error, us, data) {
     pages = data.events.chunk(chunk_size);
     total_pages = pages.length;
 
     // translucent outer glow
-    svg.append("path")
-        .datum(topojson.object(us, us.objects.land))
-        .attr("d", path)
-        .attr("class", "music-tour-glow");
+    var land = svg.selectAll(".land")
+                  .data([topojson.object(us, us.objects.land)])
+                  .enter()
+                    .append("path")
+                      .attr("d", path)
+                      .attr("class", "music-tour-glow");
 
-    var state_group = svg.selectAll("states")
-                        .data([1])
-                        .enter()
-                          .append("g")
-                          .attr("class", "music-tour-states");
-    // states
-    topojson.object(us, us.objects.states).geometries.forEach(function(o, index) {
-      state_group.append("path")
-          .datum(o)
-          .attr("d", path);
-    });
+    var states = svg.selectAll(".music-tour-states")
+                    .data(topojson.object(us, us.objects.states).geometries)
+                    .enter()
+                      .append("path")
+                        .attr("d", path)
+                        .attr("class", "music-tour-states");
 
     // draw the first page (initialized to 0)
-    nextPage();
+    MT.nextPage();
   }
 
-  function clearPage() {
+  MT.clearPage = function() {
     $(".music-tour-timeline-points").remove();
     svg.selectAll(".music-tour-events")
       .data([])
       .exit()
       .remove();
-  }
+  };
 
-  function daysSince(d) {
+  MT.daysSince = function(d) {
     return Math.round((new Date() - Date.parse(d))/(24*60*60*1000));
-  }
+  };
 
-  function nextPage() {
+  MT.pixelShift = function(datetime_local, first_date, timespan) {
+    var date_shift = (Date.parse(datetime_local) - first_date) / timespan,
+        buffer_width = 300;
+        pixels = ($(".music-tour-timeline").width() - buffer_width) * date_shift - 16 + (0.5 * buffer_width);
+    return Math.round(pixels);
+  };
+
+  MT.nextPage = function() {
     if (current_page < total_pages) {
       current_page++;
-      drawPage(current_page);
+      MT.drawPage(current_page);
     }
-  }
+  };
 
-  function previousPage() {
+  MT.previousPage = function() {
     if (current_page > 1) {
-      current_page--;
-      drawPage(current_page);
+      MT.current_page--;
+      MT.drawPage(current_page);
     }
-  }
+  };
 
-  function drawPage(page) {
-    clearPage();
+  MT.drawPage = function(page) {
+    MT.clearPage();
 
     var events = pages[page - 1],
         index_start = (current_page - 1) * chunk_size,
         firstDate = Date.parse(events[0].datetime_local),
-        timespan = Date.parse(events.last().datetime_local) - firstDate; //optionally use 'new Date()' to start timespan from current date
+        timespan = Date.parse(events.last().datetime_local) - firstDate;
 
-    // collect the events
-    events.forEach(function(evt, index) {
+    var html = _.map(events, function(evt, index) {
       var event_number = index + 1 + index_start,
-          il = (event_number).toString().length,
-          location = evt.venue.location,
-          coords = _.extend({}, [location.lon, location.lat]);
-          projectedCoords = projection(coords),
-          dateShift = (Date.parse(evt.datetime_local) - firstDate)/timespan,
-          bufferWidth = 300,
-          pixelShift = ($(".music-tour-timeline").width() - bufferWidth) * dateShift - 16 + (0.5 * bufferWidth);
-          html = "<div class='music-tour-timeline-points' style='margin-left: " + Math.round(pixelShift) + "px; z-index:" + (20-index) + "' data-eventid='" + evt.id + "'>" + (event_number) + "</div>";
-
-      $(".music-tour-timeline").append(html);
-      getSeoData(events);
-
-      function tooltip() {
-        var that = $(d3.select(this)),
-            isFromSvg = $(d3.event.fromElement).is("svg"),
-            isFromPath = $(d3.event.fromElement).is("path"),
-            isToPath = $(d3.event.toElement).is("path");
-
-        that.tooltip({
-          container: "body",
-          html: true,
-          placement: (coords[0] > -100 ? "left" : "right"),
-          title: [
-            // '<div class="music-tour-stop">this stop</div>'
-            '<div class="music-tour-info">' + evt.venue.city + ', ' + evt.venue.state + '</div>',
-            '<div class="music-tour-info">' + evt.venue.name + '</div>'
-          ].join("\n")});
-
-        if (isFromSvg || (isFromPath && isToPath)) that.tooltip("show");
-      }
-
-      var group = svg.selectAll("music-tour-events")
-                    .data([1])
-                    .enter()
-                      .append("g")
-                      .attr("event_id", evt.id)
-                      .attr("class", "music-tour-events event-" + evt.id)
-                      .on("mouseover", tooltip);
-
-      group.append("path")
-        .datum({type: "MultiPoint", coordinates: [coords]})
-        .attr("class", "music-tour-points event-" + evt.id)
-        .attr("data-eventid", evt.id)
-        .attr("d", path.pointRadius(function(d) { return unselected_radius; }));
-      group.append("text")
-        .attr("class", "music-tour-label event-" + evt.id)
-        .attr("data-eventid", evt.id)
-        .attr("transform", function(d) { return "translate(" + projectedCoords + ")"; })
-        .attr("x", function(d) { return (il > 1 ? -10 : -5); })
-        .attr("y", function(d) { return coords[1] > -1 ? 1 : -1; })
-        .attr("dy", ".35em")
-        .text(function(d) { return event_number; });
+          pixelShift = MT.pixelShift(evt.datetime_local, firstDate, timespan);
+      return "<div class='music-tour-timeline-points' style='margin-left: " + pixelShift + "px; z-index:" + (20-index) + "' data-event-id='" + evt.id + "'>" + (event_number) + "</div>";
     });
+
+    $(".music-tour-timeline").append(html);
+
+    MT.getSeoData(events);
+
+    function tooltip(d, index) {
+      var that = $(d3.select(this)),
+          coords = _.extend({}, [d.venue.location.lon, d.venue.location.lat]),
+          isFromSvg = $(d3.event.fromElement).is("svg"),
+          isFromPath = $(d3.event.fromElement).is("path"),
+          isToPath = $(d3.event.toElement).is("path");
+
+      that.tooltip({
+        container: "body",
+        html: true,
+        placement: (coords[0] > -100 ? "left" : "right"),
+        title: [
+          // '<div class="music-tour-stop">this stop</div>'
+          '<div class="music-tour-info">' + d.venue.city + ', ' + d.venue.state + '</div>',
+          '<div class="music-tour-info">' + d.venue.name + '</div>'
+        ].join("\n")});
+
+      if (isFromSvg || (isFromPath && isToPath)) that.tooltip("show");
+    }
+
+    var group = svg.selectAll(".music-tour-events").data(events).enter()
+                    .append("g")
+                    .attr("data-event-id", function(d, index) { return d.id; })
+                    .attr("class", function(d) { return "music-tour-events event-" + d.id; } )
+                    .on("mouseover", tooltip);
+
+    group.append("path")
+      .attr("class", function(d, index) { return "music-tour-points event-" + d.id; })
+      .attr("data-event-id", function(d, index) { return d.id; })
+      .datum(function(d, index) { return {type: "Point", coordinates: _.extend({}, [d.venue.location.lon, d.venue.location.lat])}; })
+      .attr("d", path.pointRadius(function(d) { return unselected_radius; }));
+    group.append("text")
+      .attr("class", function(d, index) { return "music-tour-label event-" + d.id; })
+      .attr("data-event-id", function(d, index) { return d.id; })
+      .attr("transform", function(d, index) { return "translate(" + projection(_.extend({}, [d.venue.location.lon, d.venue.location.lat])) + ")"; })
+      .attr("x", function(d, index) { return ((index_start + index + 1).toString().length > 1 ? -10 : -5); })
+      .attr("y", function(d, index) {
+        var coords = _.extend({}, [d.venue.location.lon, d.venue.location.lat]);
+        return coords[1] > -1 ? 1 : -1;
+      })
+      .attr("dy", ".35em")
+      .text(function(d, index) { return index_start + index + 1; });
 
     // do things on click of backward/forward arrows
     $(".music-tour-timeline-arrow").unbind("click");
@@ -176,14 +178,14 @@
     // do things on mouseenter of timeline points
     $(".music-tour-timeline-points").mouseenter(function() {
       var oldZ = $(this).css("z-index");
-      activatePoints($(this).attr("data-eventid"), oldZ);
-      writeSeoData($(this).data("info"));
+      MT.activatePoints($(this).attr("data-event-id"), oldZ);
+      MT.writeSeoData($(this).data("info"));
     });
 
     // do things on mouseenter of map points
     $("svg .music-tour-label, svg .music-tour-points").hover(function() {
-      activatePoints($(this).attr("data-eventid"));
-      writeSeoData($(this).data("info"));
+      MT.activatePoints($(this).attr("data-event-id"));
+      MT.writeSeoData($(this).data("info"));
     });
 
     function shiftActivePoint(fwdOrBkwd) {
@@ -193,29 +195,28 @@
       console.log(o);
       switch(x + o.active_index) {
         case chunk_size:
-          nextPage();
+          MT.nextPage();
           break;
         case -1:
-          previousPage();
+          MT.previousPage();
           break;
         default:
-          activatePoints(o.event_ids[o.active_index + x]);
+          MT.activatePoints(o.event_ids[o.active_index + x]);
       }
     }
 
     function findIndexOfActivePoint() {
-      var activeId = $(".music-tour-timeline-points.active").data("eventid");
+      var activeId = $(".music-tour-timeline-points.active").data("event-id");
       var eventIds = _.pluck(events, "id");
-      console.log(activeId);
-      console.log(eventIds);
+
       return {
         "active_index": eventIds.indexOf(activeId),
         "event_ids": eventIds
       };
     }
-  }
+  };
 
-  function activatePoints(eventId, oldZ) {
+  MT.activatePoints = function(eventId, oldZ) {
     if (typeof oldZ !== 'undefined') {
       $(".music-tour-timeline-points.active").css("z-index", oldZ);
     }
@@ -226,14 +227,14 @@
     });
 
     // then activate the correct point on the timeline & map
-    $(".music-tour-timeline-points[data-eventid='" + eventId + "'], svg .music-tour-points.event-" + eventId).each(function() {
+    $(".music-tour-timeline-points[data-event-id='" + eventId + "'], svg .music-tour-points.event-" + eventId).each(function() {
       $(this).attr("class", $(this).attr("class") + " active");
     });
-    $(".music-tour-timeline-points[data-eventid='" + eventId + "']").css("z-index", 30);
-  }
+    $(".music-tour-timeline-points[data-event-id='" + eventId + "']").css("z-index", 30);
+  };
 
   // get seo data
-  function getSeoData(events) {
+  MT.getSeoData = function(events) {
     var seoUrl = "http://seatgeek.com/utility/mapseo?performer_id=918";
     var urlPieces = _.map(events, function(e, index) {
       return "&venues[" + index + "][state]=" + e.venue.state + "&venues[" + index + "][id]=" + e.venue.id;
@@ -261,7 +262,7 @@
           for (var venue_id in data.venue) {
             if (venue_id == e.venue.id) {
               lastDateVenue = data.venue[venue_id].date;
-              daysSinceVenue = daysSince(lastDateVenue);
+              daysSinceVenue = MT.daysSince(lastDateVenue);
               daysSinceVenue = daysSinceVenue == 1 ? daysSinceVenue + " day ago" : daysSinceVenue + " days ago";
             }
           }
@@ -269,7 +270,7 @@
           for (var state in data.states) {
             if (state == e.venue.state) {
               lastDateState = data.states[state].date;
-              daysSinceState = daysSince(lastDateState);
+              daysSinceState = MT.daysSince(lastDateState);
               daysSinceState = daysSinceState == 1 ? daysSinceState + " day ago" : daysSinceState + " days ago";
             }
           }
@@ -289,19 +290,19 @@
           };
 
           if (index === 0) {
-            activatePoints(e.id);
-            writeSeoData(obj);
+            MT.activatePoints(e.id);
+            MT.writeSeoData(obj);
           }
 
           // attach seo data object to relevant points and point labels for getting later on mouseover
-          $(".music-tour-timeline-points[data-eventid='" + e.id + "'], svg .music-tour-points.event-" + e.id + ", svg .music-tour-label.event-" + e.id).data("info", obj);
+          $(".music-tour-timeline-points[data-event-id='" + e.id + "'], svg .music-tour-points.event-" + e.id + ", svg .music-tour-label.event-" + e.id).data("info", obj);
         });
       },
       dataType: "jsonp"
     });
-  }
+  };
 
-  function writeSeoData(thisObjInfo) {
+  MT.writeSeoData = function(thisObjInfo) {
     var openerHtml = _.map(thisObjInfo.openers, function(o, i) {
       return "<a href='http://seatgeek.com/" + o.slug + "-tickets'>" + o.short_name + "</a>";
     });
@@ -311,7 +312,7 @@
     $(".music-tour-state-name").text(thisObjInfo.venue_state);
     $(".music-tour-days-since-venue").text(thisObjInfo.days_since_venue);
     $(".music-tour-days-since-state").text(thisObjInfo.days_since_state);
-  }
+  };
 
   var states = {
     'AL': 'Alabama',
