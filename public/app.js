@@ -28,7 +28,7 @@
       .projection(projection)
       .pointRadius(1.5);
 
-  var svg = d3.select(".tour-map").append("svg")
+  var svg = d3.select(".music-tour-map").append("svg")
       .attr("viewBox", "0 0 " + width + " " + height)
       .attr("width", width)
       .attr("height", height);
@@ -50,13 +50,13 @@
     svg.append("path")
         .datum(topojson.object(us, us.objects.land))
         .attr("d", path)
-        .attr("class", "land-glow");
+        .attr("class", "music-tour-glow");
 
     var state_group = svg.selectAll("states")
                         .data([1])
                         .enter()
                           .append("g")
-                          .attr("class", "states");
+                          .attr("class", "music-tour-states");
     // states
     topojson.object(us, us.objects.states).geometries.forEach(function(o, index) {
       state_group.append("path")
@@ -92,41 +92,42 @@
           projectedCoords = projection(coords),
           dateShift = (Date.parse(evt.datetime_local) - firstDate)/timespan,
           bufferWidth = 300,
-          pixelShift = ($("#timeline").width() - bufferWidth) * dateShift - 16 + (0.5 * bufferWidth);
-          html = "<div class='timeline-points' style='margin-left: " + Math.round(pixelShift) + "px; z-index:" + (20-index) + "' data-eventid='" + evt.id + "'>" + (index + 1) + "</div>";
+          pixelShift = ($(".music-tour-timeline").width() - bufferWidth) * dateShift - 16 + (0.5 * bufferWidth);
+          html = "<div class='music-tour-timeline-points' style='margin-left: " + Math.round(pixelShift) + "px; z-index:" + (20-index) + "' data-eventid='" + evt.id + "'>" + (index + 1) + "</div>";
 
-      $("#timeline-points").append(html);
+      $(".music-tour-timeline").append(html);
 
       function tooltip() {
-        $(d3.select(this)).tooltip({
+        var that = $(d3.select(this));
+        that.tooltip({
           container: "body",
           html: true,
           placement: (coords[0] > -100 ? "left" : "right"),
           title: [
-            // '<div class="tour-stop">this stop</div>'
-            '<div class="tour-info">' + evt.venue.city + ', ' + evt.venue.state + '</div>',
-            '<div class="tour-info">' + evt.venue.name + '</div>'
+            // '<div class="music-tour-stop">this stop</div>'
+            '<div class="music-tour-info">' + evt.venue.city + ', ' + evt.venue.state + '</div>',
+            '<div class="music-tour-info">' + evt.venue.name + '</div>'
           ].join("\n")});
-        $(d3.select(this)).tooltip("show");
+
+        if ($(d3.event.fromElement).is("svg") || ($(d3.event.fromElement).is("path") && $(d3.event.toElement).is("path"))) that.tooltip("show");
       }
 
-      var group = svg.selectAll("events")
+      var group = svg.selectAll("music-tour-events")
                     .data([1])
                     .enter()
                       .append("g")
                       .attr("event_id", evt.id)
-                      .attr("class", "events event-" + evt.id)
+                      .attr("class", "music-tour-events event-" + evt.id)
                       .on("mouseover", tooltip)
-                      .on("tooltip", tooltip);
-
+                      .on("tip", tooltip);
 
       group.append("path")
         .datum({type: "MultiPoint", coordinates: [coords]})
-        .attr("class", "points event-" + evt.id)
+        .attr("class", "music-tour-points event-" + evt.id)
         .attr("data-eventid", evt.id)
         .attr("d", path.pointRadius(function(d) { return unselected_radius; }));
       group.append("text")
-        .attr("class", "place-label event-" + evt.id)
+        .attr("class", "music-tour-label event-" + evt.id)
         .attr("data-eventid", evt.id)
         .attr("transform", function(d) { return "translate(" + projectedCoords + ")"; })
         .attr("x", function(d) { return (il > 1 ? -10 : -5); })
@@ -196,20 +197,20 @@
           }
 
           // attach seo data object to relevant points and point labels for getting later on mouseover
-          $(".timeline-points[data-eventid='" + e.id + "'], svg path.points.event-" + e.id + ", svg text.place-label.event-" + e.id).data("info", obj);
+          $(".music-tour-timeline-points[data-eventid='" + e.id + "'], svg .music-tour-points.event-" + e.id + ", svg .music-tour-label.event-" + e.id).data("info", obj);
         });
       },
       dataType: "jsonp"
     });
 
     // do things on mouseenter of timeline points
-    $(".timeline-points").mouseenter(function() {
+    $(".music-tour-timeline-points").mouseenter(function() {
       activatePoints($(this).attr("data-eventid"));
       writeSeoData($(this).data("info"));
     });
 
     // do things on mouseenter of map points
-    $("svg text.place-label, svg path.points").hover(function() {
+    $("svg .music-tour-label, svg .music-tour-points").hover(function() {
       activatePoints($(this).attr("data-eventid"));
       writeSeoData($(this).data("info"));
     });
@@ -236,12 +237,12 @@
 
     function activatePoints(eventId) {
       // first deactivate all points
-      $("svg path.points, .timeline-points").each(function() {
+      $("svg .music-tour-points, .music-tour-timeline-points").each(function() {
         $(this).attr("class", $(this).attr("class").replace(" active",""));
       });
 
       // then activate the correct point on the timeline & map
-      $(".timeline-points[data-eventid='" + eventId + "'], svg path.points.event-" + eventId).each(function() {
+      $(".music-tour-timeline-points[data-eventid='" + eventId + "'], svg .music-tour-points.event-" + eventId).each(function() {
         $(this).attr("class", $(this).attr("class") + " active");
       });
     }
@@ -250,12 +251,12 @@
       var openerHtml = _.map(thisObjInfo.openers, function(o, i) {
         return "<a href='http://seatgeek.com/" + o.slug + "-tickets'>" + o.short_name + "</a>";
       });
-      $("span.openers").html(openerHtml.join(", "));
-      $("span.performer-name").text(thisObjInfo.performer_short_name);
-      $("span.venue-name").text(thisObjInfo.venue_name);
-      $("span.state-name").text(thisObjInfo.venue_state);
-      $("span.days-since-venue").text(thisObjInfo.days_since_venue);
-      $("span.days-since-state").text(thisObjInfo.days_since_state);
+      $(".music-tour-openers").html(openerHtml.join(", "));
+      $(".music-tour-performer-name").text(thisObjInfo.performer_short_name);
+      $(".music-tour-venue-name").text(thisObjInfo.venue_name);
+      $(".music-tour-state-name").text(thisObjInfo.venue_state);
+      $(".music-tour-days-since-venue").text(thisObjInfo.days_since_venue);
+      $(".music-tour-days-since-state").text(thisObjInfo.days_since_state);
     }
 
     var states = {
