@@ -11,9 +11,7 @@ path {
   stroke-width: 2px;
 }
 
-.points.active,
-.points.current,
-.points:hover {
+.points.active {
   fill: #fff;
   stroke-width: 5px;
 }
