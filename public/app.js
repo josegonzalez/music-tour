@@ -92,14 +92,14 @@
         events.forEach(function(e, index) {
           var obj = {};
 
-          var performers = _.map(e.performers, function(p) { 
-            var o = {};
-            o["id"] = p.id;
-            o["short_name"] = p.short_name;
-            o["slug"] = p.slug;
-            return o; 
+          var openers = _.map(e.performers, function(p) { 
+            return {
+              "id": p.id,
+              "short_name": p.short_name,
+              "slug": p.slug
+            }; 
           });
-          performers.shift();
+          openers.shift();
 
           var lastDateVenue = daysSinceVenue = "never";
           for (var key in data.venue) {
@@ -117,17 +117,19 @@
             }
           }
           
-          obj["event_id"] = e.id;
-          obj["performer_slug"] = e.performers[0].slug;
-          obj["performer_short_name"] = e.performers[0].short_name;
-          obj["venue_id"] = e.venue.id;
-          obj["venue_name"] = e.venue.name;
-          obj["venue_state"] = e.venue.state;
-          obj["last_date_venue"] = lastDateVenue;
-          obj["last_date_state"] = lastDateState;
-          obj["days_since_venue"] = daysSinceVenue;
-          obj["days_since_state"] = daysSinceState;
-          obj["openers"] = performers;
+          var obj = {
+            "event_id": e.id,
+            "performer_slug": e.performers[0].slug,
+            "performer_short_name": e.performers[0].short_name,
+            "venue_id": e.venue.id,
+            "venue_name": e.venue.name,
+            "venue_state": e.venue.state,
+            "last_date_venue": lastDateVenue,
+            "last_date_state": lastDateState,
+            "days_since_venue": daysSinceVenue,
+            "days_since_state": daysSinceState,
+            "openers": openers
+          };
           
           $("[data-eventid='" + e.id + "'], svg path.points.event-" + e.id + ", svg text.place-label.event-" + e.id).data("info", obj);
         });
