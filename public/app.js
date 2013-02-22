@@ -98,7 +98,8 @@
       $("#timeline-points").append(html);
 
       function tooltip() {
-        $(d3.select(this)).tooltip({
+        var that = $(d3.select(this));
+        that.tooltip({
           container: "body",
           html: true,
           placement: (coords[0] > -100 ? "left" : "right"),
@@ -107,7 +108,8 @@
             '<div class="tour-info">' + evt.venue.city + ', ' + evt.venue.state + '</div>',
             '<div class="tour-info">' + evt.venue.name + '</div>'
           ].join("\n")});
-        $(d3.select(this)).tooltip("show");
+
+        if ($(d3.event.fromElement).is("svg")) that.tooltip("show");
       }
 
       var group = svg.selectAll("events")
@@ -118,7 +120,6 @@
                       .attr("class", "events event-" + evt.id)
                       .on("mouseover", tooltip)
                       .on("tooltip", tooltip);
-
 
       group.append("path")
         .datum({type: "MultiPoint", coordinates: [coords]})
