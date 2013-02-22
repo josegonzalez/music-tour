@@ -14,6 +14,7 @@
       current_page = 0,
       chunk_size = 7,
       max_events = 20,
+      total_pages = 0,
       height = 500,
       width = 790;
 
@@ -46,6 +47,7 @@
 
   function ready(error, us, data) {
     pages = data.events.chunk(chunk_size);
+    total_pages = pages.length;
 
     // translucent outer glow
     svg.append("path")
@@ -66,11 +68,12 @@
     });
 
     // draw the first page (initialized to 0)
-    drawPage(current_page);
+    nextPage();
   }
 
   function clearPage() {
-    svg.selectAll(".events")
+    $(".music-tour-timeline-points").remove();
+    svg.selectAll(".music-tour-events")
       .data([])
       .exit()
       .remove();
@@ -80,21 +83,39 @@
     return Math.round((new Date() - Date.parse(d))/(24*60*60*1000));
   }
 
+  function nextPage() {
+    if (current_page < total_pages) {
+      current_page++;
+      drawPage(current_page);
+    }
+  }
+
+  function previousPage() {
+    if (current_page > 1) {
+      current_page--;
+      drawPage(current_page);
+    }
+  }
+
   function drawPage(page) {
-    var events = pages[page],
+    clearPage();
+
+    var events = pages[page - 1],
+        index_start = (current_page - 1) * chunk_size,
         firstDate = Date.parse(events[0].datetime_local),
         timespan = Date.parse(events.last().datetime_local) - firstDate; //optionally use 'new Date()' to start timespan from current date
 
     // collect the events
     events.forEach(function(evt, index) {
-      var il = (index + 1).toString().length,
+      var event_number = index + 1 + index_start,
+          il = (event_number).toString().length,
           location = evt.venue.location,
           coords = _.extend({}, [location.lon, location.lat]);
           projectedCoords = projection(coords),
           dateShift = (Date.parse(evt.datetime_local) - firstDate)/timespan,
           bufferWidth = 300,
           pixelShift = ($(".music-tour-timeline").width() - bufferWidth) * dateShift - 16 + (0.5 * bufferWidth);
-          html = "<div class='music-tour-timeline-points' style='margin-left: " + Math.round(pixelShift) + "px; z-index:" + (20-index) + "' data-eventid='" + evt.id + "'>" + (index + 1) + "</div>";
+          html = "<div class='music-tour-timeline-points' style='margin-left: " + Math.round(pixelShift) + "px; z-index:" + (20-index) + "' data-eventid='" + evt.id + "'>" + (event_number) + "</div>";
 
       $(".music-tour-timeline").append(html);
       getSeoData(events);
@@ -135,10 +156,14 @@
         .attr("x", function(d) { return (il > 1 ? -10 : -5); })
         .attr("y", function(d) { return coords[1] > -1 ? 1 : -1; })
         .attr("dy", ".35em")
-        .text(function(d) { return index + 1; });
+        .text(function(d) { return event_number; });
     });
 
     // do things on click of backward/forward arrows
+    $(".music-tour-timeline-arrow").unbind("click");
+    $(".music-tour-timeline-points").unbind("mouseenter");
+    $("svg .music-tour-label, svg .music-tour-points").unbind("hover");
+
     $(".music-tour-timeline-arrow").click(function(e) {
       e.preventDefault();
       var direction = $(this).hasClass("music-tour-forward") ? "forward" : $(this).hasClass("music-tour-backward") ? "backward" : "";
@@ -161,18 +186,14 @@
     function shiftActivePoint(fwdOrBkwd) {
       var x = (fwdOrBkwd == "forward") ? 1 : "backward" ? -1 : 0;
       var o = findIndexOfActivePoint();
-      switch(x + o) {
-        case 7:
-          clearPage();
-          drawPage(current_page + 1);
-          current_page = current_page + 1;
+      console.log(x);
+      console.log(o);
+      switch(x + o.active_index) {
+        case chunk_size:
+          nextPage();
           break;
         case -1: 
-          if (current_page > 1) { 
-            clearPage();
-            drawPage(current_page - 1);
-            current_page = current_page - 1;
-          }
+          previousPage();
           break;
         default:
           activatePoints(o.event_ids[o.active_index + x]);
@@ -182,6 +203,8 @@
     function findIndexOfActivePoint() {
       var activeId = $(".music-tour-timeline-points.active").data("eventid");
       var eventIds = _.pluck(events, "id");
+      console.log(activeId);
+      console.log(eventIds);
       return {
         "active_index": eventIds.indexOf(activeId),
         "event_ids": eventIds
