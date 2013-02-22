@@ -189,3 +189,7 @@ path {
   margin: 0 0 18px;
   font-size: 16px;
 }
+
+.sgautocomplete-row-first {
+  display: none;
+}
