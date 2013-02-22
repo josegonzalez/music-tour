@@ -64,8 +64,8 @@
           .attr("d", path);
     });
 
-    // draw the first page
-    drawPage(0);
+    // draw the first page (initialized to 0)
+    drawPage(current_page);
   }
 
   function clearPage() {
@@ -161,11 +161,15 @@
       switch(x + o) {
         case 7:
           clearPage();
-          drawPage(1);
+          drawPage(current_page + 1);
+          current_page = current_page + 1;
           break;
         case -1: 
-          clearPage();
-          drawPage(0);
+          if (current_page > 1) { 
+            clearPage();
+            drawPage(current_page - 1);
+            current_page = current_page - 1;
+          }
           break;
         default:
           activatePoints(o.event_ids[o.active_index + x]);
@@ -180,7 +184,6 @@
         "event_ids": eventIds
       };
     }
-
   }
 
   function activatePoints(eventId) {
