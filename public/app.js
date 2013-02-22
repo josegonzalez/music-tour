@@ -145,8 +145,7 @@
                       .append("g")
                       .attr("event_id", evt.id)
                       .attr("class", "music-tour-events event-" + evt.id)
-                      .on("mouseover", tooltip)
-                      .on("tip", tooltip);
+                      .on("mouseover", tooltip);
 
       group.append("path")
         .datum({type: "MultiPoint", coordinates: [coords]})
