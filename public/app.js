@@ -214,12 +214,24 @@
       writeSeoData($(this).data("info"));
     });
 
-    function stepForward() {
-      
+    $(".timeline-arrow").click(function() {
+      shiftActivePoint($(this).attr("id"));
+    });
+
+
+    function shiftActivePoint(fwdOrBkwd) {
+      var x = (fwdOrBkwd == "forward") ? 1 : "backward" ? -1 : 0;
+      var o = findIndexOfActivePoint();
+      activatePoints(o.event_ids[o.active_index + x]);
     }
 
-    function stepBackward() {
-      
+    function findIndexOfActivePoint() {
+      var activeId = $(".timeline-points.active").data("eventid");
+      var eventIds = _.pluck(events, "id");
+      return {
+        "active_index": eventIds.indexOf(activeId),
+        "event_ids": eventIds
+      };
     }
 
     function activatePoints(eventId) {
