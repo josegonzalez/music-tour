@@ -163,7 +163,6 @@ path {
   position: absolute;
   left: 1px;
   top: 1px;
-  /*background: url(photo_hover.png) no-repeat left top;*/
   display: none;
   z-index: 1;
   /* Fallback for web browsers that don't support RGBa */

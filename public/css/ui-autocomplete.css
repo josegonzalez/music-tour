@@ -99,7 +99,7 @@ ul.ui-autocomplete li.ui-active-menuitem-li + li { margin-top: -1px;  }
 }
 .ui-sgautocomplete .sgautocomplete-row-first .sgautocomplete-results-icon { border-top: none; }
 .ui-sgautocomplete .sgautocomplete-results-icon div {
-  background-image: url(autocomplete.png);
+  background-image: url(/img/autocomplete.png);
   background-repeat: no-repeat;
   width: 49px;
   height: 27px;
