@@ -252,14 +252,17 @@
     });
 
     // do things on mouseenter of timeline points
-    $(".music-tour-timeline-points").mouseenter(function() {
-      MT.reactivatePoints($(this), $(this).css("z-index"));
-    });
+    $(".music-tour-timeline-points").hoverIntent(
+      function() {
+        MT.reactivatePoints($(this), $(this).css("z-index"));
+      }, function() {})
+    ;
 
     // do things on mouseenter of map points
-    $(".music-tour-label, .music-tour-points").hover(function() {
-      MT.reactivatePoints($(this));
-    });
+    $(".music-tour-label, .music-tour-points").hoverIntent(
+      function() {
+        MT.reactivatePoints($(this));
+      }, function() {});
   };
 
   MT.tooltip = function(d, index) {
