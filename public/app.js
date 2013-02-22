@@ -1,10 +1,20 @@
 (function() {
   Array.prototype.last = function() { return this[this.length-1]; };
 
-  var max_events = 7;
+  Array.prototype.chunk = function(chunkSize) {
+    var array=this;
+    return [].concat.apply([],
+        array.map(function(elem,i) {
+            return i%chunkSize ? [] : [array.slice(i,i+chunkSize)];
+        })
+    );
+  };
 
-  var width = 790,
-      height = 500;
+  var pages = {},
+      current_page = 0;
+      max_events = 20,
+      height = 500,
+      width = 790;
 
   var radius = d3.scale.sqrt()
       .domain([0, 1e6])
@@ -34,9 +44,7 @@
       .await(ready);
 
   function ready(error, us, data) {
-    var events = data.events,
-        firstDate = Date.parse(events[0].datetime_local),
-        timespan = Date.parse(events.last().datetime_local) - firstDate; //optionally use 'new Date()' to start timespan from current date
+    pages = data.events.chunk(7);
 
     // translucent outer glow
     svg.append("path")
@@ -44,18 +52,40 @@
         .attr("d", path)
         .attr("class", "land-glow");
 
+    var state_group = svg.selectAll("states")
+                        .data([1])
+                        .enter()
+                          .append("g")
+                          .attr("class", "states");
     // states
     topojson.object(us, us.objects.states).geometries.forEach(function(o, index) {
-      svg.append("path")
+      state_group.append("path")
           .datum(o)
           .attr("d", path);
     });
+
+    // draw the first page
+    drawPage(0);
+  }
+
+  function clearPage() {
+    svg.selectAll(".events")
+      .data([])
+      .exit()
+      .remove();
+  }
+
+  function drawPage(page) {
+    var events = pages[page],
+        firstDate = Date.parse(events[0].datetime_local),
+        timespan = Date.parse(events.last().datetime_local) - firstDate; //optionally use 'new Date()' to start timespan from current date
 
     // collect the events
     events.forEach(function(evt, index) {
       var il = (index + 1).toString().length,
           location = evt.venue.location,
           coords = _.extend({}, [location.lon, location.lat]);
+          projectedCoords = projection(coords),
           dateShift = (Date.parse(evt.datetime_local) - firstDate)/timespan,
           bufferWidth = 100,
           classes = index ? "timeline-points" : "timeline-points active",
@@ -64,17 +94,24 @@
 
       $("#timeline-points").append(html);
 
-      svg.append("path")
+      var group = svg.selectAll("events")
+                    .data([1])
+                    .enter()
+                      .append("g")
+                      .attr("event_id", evt.id)
+                      .attr("class", "events event-" + evt.id);
+
+      group.append("path")
         .datum({type: "MultiPoint", coordinates: [coords]})
         .attr("class", "points event-" + evt.id)
         .attr("data-eventid", evt.id)
         .attr("d", path.pointRadius(function(d) { return unselected_radius; }));
 
-       svg.append("text")
+      group.append("text")
         .attr("class", "place-label event-" + evt.id)
         .attr("data-eventid", evt.id)
-        .attr("transform", function(d) { return "translate(" + projection(coords) + ")"; })
-        .attr("x", function(d) { return coords[0] > -1 ? (il > 1 ? 12 : 6) : (il > 1 ? -12 : -6); })
+        .attr("transform", function(d) { return "translate(" + projectedCoords + ")"; })
+        .attr("x", function(d) { return (coords[0] > -1 ? 1 : -1) * (il > 1 ? 12 : 6); })
         .attr("y", function(d) { return coords[1] > -1 ? 1 : -1; })
         .attr("dy", ".35em")
         .text(function(d) { return index + 1; });
@@ -181,7 +218,6 @@
       $("span.days-since-venue").text(thisObjInfo.days_since_venue);
       $("span.days-since-state").text(thisObjInfo.days_since_state);
     });
-
   }
 
 })();
