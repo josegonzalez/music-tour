@@ -62,6 +62,13 @@ a:hover { color: #005278; }
   right: 0;
 }
 
+.blue-arrow {
+  display: inline-block;
+  height: 60px;
+  position: absolute;
+  margin: -10px 0 0 60px;
+}
+
 /* SEARCH */
 .music-tour-search {
   height: 100px;
@@ -156,7 +163,7 @@ form .search-ghost {
 .music-tour-map-container h2 {
   font-size: 40px;
   font-weight: 100;
-  margin-left: 180px;
+  margin-left: 150px;
 }
 
 /* 3. Music Key SEO */
