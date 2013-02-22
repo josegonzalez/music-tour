@@ -1,42 +1,8 @@
 (function() {
-  //ben's js
   Array.prototype.last = function() { return this[this.length-1]; };
 
-  var numEvents = 7;
-  var url = "http://api.seatgeek.com/2/events?performers.slug=jason-aldean&per_page=" + numEvents + "&format=json&callback=fireEvent";
-  $.ajax({
-    url: url,
-    success: function(data) {
-      var events = data.events;
-      var firstDate = Date.parse(events[0].datetime_local);
-      var timespan = Date.parse(events.last().datetime_local) - firstDate; //optionally use 'new Date()' to start timespan from current date
+  var max_events = 7;
 
-      for (var i = 0; i < events.length; i++) {
-        events[i].date_shift_from_zero = (Date.parse(events[i].datetime_local) - firstDate)/timespan;
-        var bufferWidth = 100;
-        var pixelShift = ($("div#timeline").width() - bufferWidth) * events[i].date_shift_from_zero - 16 + (0.5 * bufferWidth);
-
-        var classes = "timeline-points";
-        if (!i) classes = classes + " active";
-        var html = "<div class='" + classes + "' style='margin-left: " + Math.round(pixelShift) + "px' data-eventid='" + events[i].id + "'>" + (i + 1) + "</div>";
-        $("div#timeline-points").append(html);
-      }
-
-      $("div.timeline-points").mouseenter(function() {
-        $("div.timeline-points").removeClass("active");
-        $(this).addClass("active");
-
-        var eventId = $(this).attr("data-eventid");
-        $("path.points").each(function() {
-          $(this).attr("class", $(this).attr("class").replace(" active",""));
-        });
-        $("path.points.event-" + eventId).attr("class", $("path.points.event-" + eventId).attr("class") + " active");
-      });
-    },
-    dataType: 'jsonp'}
-  );
-
-  //jose's js
   var width = 790,
       height = 500;
 
@@ -64,10 +30,14 @@
 
   queue()
       .defer(d3.json, "/us.json")
-      .defer(d3.jsonp, "http://api.seatgeek.com/2/events?performers.slug=jason-aldean&per_page=" + numEvents + "&callback={callback}")
+      .defer(d3.jsonp, "http://api.seatgeek.com/2/events?performers.slug=jason-aldean&per_page=" + max_events + "&callback={callback}")
       .await(ready);
 
-  function ready(error, us, events) {
+  function ready(error, us, data) {
+    var events = data.events,
+        firstDate = Date.parse(events[0].datetime_local),
+        timespan = Date.parse(events.last().datetime_local) - firstDate; //optionally use 'new Date()' to start timespan from current date
+
     // translucent outer glow
     svg.append("path")
         .datum(topojson.object(us, us.objects.land))
@@ -82,10 +52,17 @@
     });
 
     // collect the events
-    events.events.forEach(function(evt, index) {
+    events.forEach(function(evt, index) {
       var il = (index + 1).toString().length,
           location = evt.venue.location,
           coords = _.extend({}, [location.lon, location.lat]);
+          dateShift = (Date.parse(evt.datetime_local) - firstDate)/timespan,
+          bufferWidth = 100,
+          classes = index ? "timeline-points" : "timeline-points active",
+          pixelShift = ($("#timeline").width() - bufferWidth) * dateShift - 16 + (0.5 * bufferWidth);
+          html = "<div class='" + classes + "' style='margin-left: " + Math.round(pixelShift) + "px' data-eventid='" + evt.id + "'>" + (index + 1) + "</div>";
+
+      $("#timeline-points").append(html);
 
       svg.append("path")
         .datum({type: "MultiPoint", coordinates: [coords]})
@@ -103,13 +80,12 @@
         .text(function(d) { return index + 1; });
     });
 
-    //on mouseenter of timeline point, activate the timeline point + corresponding map point
-    $("div.timeline-points").mouseenter(function() {
-      $("div.timeline-points").removeClass("active");
+    $(".timeline-points").mouseenter(function() {
+      $(".timeline-points").removeClass("active");
       $(this).addClass("active");
 
       $("svg path.points").each(function() {
-        $(this).attr("class", $(this).attr("class").replace(" active",""));
+        $(this).attr("class", $(this).attr("class").replace(" active", ""));
       });
       var thisMapPoint = $("svg path.points.event-" + $(this).attr("data-eventid"));
       thisMapPoint.attr("class", thisMapPoint.attr("class") + " active");
@@ -117,12 +93,12 @@
 
     //on mouseenter of map point label, activate the map point + corresponding timeline point
     $("svg text.place-label, svg path.points").hover(function() {
-      $("svg path.points, div.timeline-points").each(function() {
+      $("svg path.points, .timeline-points").each(function() {
         $(this).attr("class", $(this).attr("class").replace(" active",""));
       });
       var thisMapPoint = $(".points.event-" + $(this).attr("data-eventid"));
       thisMapPoint.attr("class", thisMapPoint.attr("class") + " active");
-      var thisTimelinePoint = $("div.timeline-points[data-eventid='" + $(this).attr("data-eventid") + "']");
+      var thisTimelinePoint = $(".timeline-points[data-eventid='" + $(this).attr("data-eventid") + "']");
       thisTimelinePoint.attr("class", thisTimelinePoint.attr("class") + " active");
     });
 
