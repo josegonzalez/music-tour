@@ -110,20 +110,20 @@ form .search-ghost {
   padding-top: 11px !important;
 }
 .search-form .search-ghost {
-color: #CCC;
-padding: 7px 0 7px 10px;
-cursor: text;
-white-space: nowrap;
-overflow-x: hidden;
+  color: #CCC;
+  padding: 7px 0 7px 10px;
+  cursor: text;
+  white-space: nowrap;
+  overflow-x: hidden;
 }
 .search-form .search-ghost {
-position: absolute;
-top: 0;
-left: 0;
-border: none;
-background-color: transparent;
-outline: none;
-width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: none;
+  background-color: transparent;
+  outline: none;
+  width: 100%;
 }
 .search-form input[type="text"]{
   font: normal 30px proxima-nova-1, proxima-nova-2, helvetica, arial, sans-serif;
@@ -144,6 +144,11 @@ width: 100%;
 /* 2. Mapping Interface */
 .music-tour-map-container {
   padding: 15px 20px;
+}
+.music-tour-map-container h2 {
+  font-size: 40px;
+  font-weight: 100;
+  margin-left: 180px;
 }
 
 /* 3. Music Key SEO */
