@@ -172,7 +172,7 @@
       var direction = $(this).hasClass("music-tour-forward") ? "forward" : $(this).hasClass("music-tour-backward") ? "backward" : "";
       shiftActivePoint(direction);
     });
-    
+
     // do things on mouseenter of timeline points
     $(".music-tour-timeline-points").mouseenter(function() {
       var oldZ = $(this).css("z-index");
@@ -195,7 +195,7 @@
         case chunk_size:
           nextPage();
           break;
-        case -1: 
+        case -1:
           previousPage();
           break;
         default:
@@ -231,7 +231,7 @@
     });
     $(".music-tour-timeline-points[data-eventid='" + eventId + "']").css("z-index", 30);
   }
-  
+
   // get seo data
   function getSeoData(events) {
     var seoUrl = "http://seatgeek.com/utility/mapseo?performer_id=918";
