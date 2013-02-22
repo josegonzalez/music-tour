@@ -95,8 +95,6 @@
           $(".music-tour-map-container .center").html(t());
 
           // Fix up the input box
-          MT.artistName = data.events[0].performers[0].name;
-          input.val(MT.artistName);
           input.blur();
 
           // Hack to ensure we can get SEO information
