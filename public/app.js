@@ -11,7 +11,8 @@
   };
 
   var pages = {},
-      current_page = 0;
+      current_page = 0,
+      chunk_size = 7,
       max_events = 20,
       height = 500,
       width = 790;
@@ -44,7 +45,7 @@
       .await(ready);
 
   function ready(error, us, data) {
-    pages = data.events.chunk(7);
+    pages = data.events.chunk(chunk_size);
 
     // translucent outer glow
     svg.append("path")
@@ -138,7 +139,8 @@
     });
 
     // do things on click of backward/forward arrows
-    $(".music-tour-timeline-arrow").click(function() {
+    $(".music-tour-timeline-arrow").click(function(e) {
+      e.preventDefault();
       var direction = $(this).hasClass("music-tour-forward") ? "forward" : $(this).hasClass("music-tour-backward") ? "backward" : "";
       shiftActivePoint(direction);
     });
