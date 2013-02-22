@@ -1,3 +1,13 @@
+.tooltip-inner {
+  box-shadow: 5px 6px 21px #888;
+  max-width: 300px;
+}
+
+
+.popover {
+  max-width: 376px;
+}
+
 path {
   fill: #BEDBF1;
   stroke: #fff;
@@ -28,10 +38,18 @@ path {
   font-size: 18px;
 }
 
+.music-tour-info-map {
+  border-radius: 5px;
+  float:left;
+}
 .music-tour-info {
   color: #4485E9;
+  float:right;
   font-size: 14px;
+  padding-left: 10px;
   text-align: left;
+  width: 140px;
+  word-wrap:break-word;
 }
 
 .music-tour-timeline {

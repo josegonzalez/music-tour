@@ -270,16 +270,19 @@
         coords = _.extend({}, [d.venue.location.lon, d.venue.location.lat]),
         isFromSvg = $(d3.event.fromElement).is("svg"),
         isFromPath = $(d3.event.fromElement).is("path"),
-        isToPath = $(d3.event.toElement).is("path");
+        isToPath = $(d3.event.toElement).is("path"),
+        location = 'center=' + d.venue.location.lat + ',' + d.venue.location.lon;
 
     that.tooltip({
       container: "body",
       html: true,
       placement: (coords[0] > -100 ? "left" : "right"),
       title: [
-        // '<div class="music-tour-stop">this stop</div>'
-        '<div class="music-tour-info">' + d.venue.city + ', ' + d.venue.state + '</div>',
-        '<div class="music-tour-info">' + d.venue.name + '</div>'
+        '<img class="music-tour-info-map" src="http://maps.googleapis.com/maps/api/staticmap?' + location + '&zoom=13&size=70x70&sensor=false&key=AIzaSyC3uijI45bYSqsckXpEivGEHC7DFJWBNdE" />',
+        '<div class="music-tour-info">',
+          d.venue.city + ', ' + d.venue.state + '<br />' + d.venue.name,
+        '</div>',
+        '<div class="clear"></div>'
       ].join("\n")});
 
     if (isFromSvg || (isFromPath && isToPath)) that.tooltip("show");
