@@ -412,6 +412,7 @@
     });
 
     var t = _.template($(".template-seo").html());
+    $(".music-tour-seo").remove();
     $(".music-tour-map-container").after(t({opener: openerHtml, info: thisObjInfo}));
   };
 
