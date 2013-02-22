@@ -94,24 +94,39 @@
 
       $("#timeline-points").append(html);
 
+      function tooltip() {
+        $(d3.select(this)).tooltip({
+          container: "body",
+          html: true,
+          placement: (coords[0] > -100 ? "left" : "right"),
+          title: [
+            // '<div class="tour-stop">this stop</div>'
+            '<div class="tour-info">' + evt.venue.city + ', ' + evt.venue.state + '</div>',
+            '<div class="tour-info">' + evt.venue.name + '</div>'
+          ].join("\n")});
+        $(d3.select(this)).tooltip("show");
+      }
+
       var group = svg.selectAll("events")
                     .data([1])
                     .enter()
                       .append("g")
                       .attr("event_id", evt.id)
-                      .attr("class", "events event-" + evt.id);
+                      .attr("class", "events event-" + evt.id)
+                      .on("mouseover", tooltip)
+                      .on("tooltip", tooltip);
+
 
       group.append("path")
         .datum({type: "MultiPoint", coordinates: [coords]})
         .attr("class", "points event-" + evt.id)
         .attr("data-eventid", evt.id)
         .attr("d", path.pointRadius(function(d) { return unselected_radius; }));
-
       group.append("text")
         .attr("class", "place-label event-" + evt.id)
         .attr("data-eventid", evt.id)
         .attr("transform", function(d) { return "translate(" + projectedCoords + ")"; })
-        .attr("x", function(d) { return (coords[0] > -1 ? 1 : -1) * (il > 1 ? 12 : 6); })
+        .attr("x", function(d) { return (il > 1 ? -10 : -5); })
         .attr("y", function(d) { return coords[1] > -1 ? 1 : -1; })
         .attr("dy", ".35em")
         .text(function(d) { return index + 1; });
@@ -122,6 +137,7 @@
     var urlPieces = _.map(events, function(e, index) {
       return "&venues[" + index + "][state]=" + e.venue.state + "&venues[" + index + "][id]=" + e.venue.id;
     });
+
     var seoUrl = seoUrl + urlPieces.join("");
     $.ajax({
       url: seoUrl,
