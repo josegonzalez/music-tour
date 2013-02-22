@@ -230,7 +230,7 @@
     },
     _renderItem: function (elem, item) {
       var that = this;
-      $('<a class="sgautocomplete-result"></a>')
+      $('<span class="sgautocomplete-result"></span>')
           .html([
             '<span class="sgautocomplete-result-title">' + item.term + '</span>',
             item.data.subtitle ? '<span class="sgautocomplete-result-subtitle">' + item.data.subtitle + '</span>' : ''
