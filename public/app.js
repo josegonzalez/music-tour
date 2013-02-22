@@ -1,5 +1,7 @@
 (function() {
   //ben's js
+  Array.prototype.last = function() { return this[this.length-1]; };
+
   var numEvents = 7;
   var url = "http://api.seatgeek.com/2/events?performers.slug=jason-aldean&per_page=" + numEvents + "&format=json&callback=fireEvent";
   $.ajax({
@@ -15,7 +17,7 @@
         var pixelShift = ($("div#timeline").width() - bufferWidth) * events[i].date_shift_from_zero - 16 + (0.5 * bufferWidth);
 
         var classes = "timeline-points";
-        if(i==0) {classes = classes + " active";}
+        if (!i) classes = classes + " active";
         var html = "<div class='" + classes + "' style='margin-left: " + Math.round(pixelShift) + "px' data-eventid='" + events[i].id + "'>" + (i + 1) + "</div>";
         $("div#timeline-points").append(html);
       }
@@ -23,7 +25,7 @@
       $("div.timeline-points").mouseenter(function() {
         $("div.timeline-points").removeClass("active");
         $(this).addClass("active");
-        
+
         var eventId = $(this).attr("data-eventid");
         console.log("eventid = " + eventId);
         $("path.points").each(function() {
@@ -34,8 +36,6 @@
     },
     dataType: 'jsonp'}
   );
-
-  Array.prototype.last = function() {return this[this.length-1];}
 
   //jose's js
   var width = 790,
