@@ -158,6 +158,7 @@
             if (key == e.venue.id) {
               lastDateVenue = data.venue[key].date;
               daysSinceVenue = Math.round((new Date() - Date.parse(lastDateVenue))/(24*60*60*1000));
+              daysSinceVenue = daysSinceVenue == 1 ? daysSinceVenue + " day ago" : daysSinceVenue + " days ago";
             }
           }
 
@@ -166,6 +167,7 @@
             if (key == e.venue.state) {
               lastDateState = data.states[key].date;
               daysSinceState = Math.round((new Date() - Date.parse(lastDateState))/(24*60*60*1000));
+              daysSinceState = daysSinceState == 1 ? daysSinceState + " day ago" : daysSinceState + " days ago";
             }
           }
 
@@ -206,6 +208,14 @@
       activatePoints($(this).attr("data-eventid"));
       writeSeoData($(this).data("info"));
     });
+
+    function stepForward() {
+      
+    }
+
+    function stepBackward() {
+      
+    }
 
     function activatePoints(eventId) {
       // first deactivate all points
