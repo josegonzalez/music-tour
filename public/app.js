@@ -1,7 +1,7 @@
 (function() {
   Array.prototype.last = function() { return this[this.length-1]; };
 
-  var max_events = 7;
+  var max_events = 6;
 
   var width = 790,
       height = 500;
@@ -57,7 +57,7 @@
           location = evt.venue.location,
           coords = _.extend({}, [location.lon, location.lat]);
           dateShift = (Date.parse(evt.datetime_local) - firstDate)/timespan,
-          bufferWidth = 100,
+          bufferWidth = 300,
           classes = index ? "timeline-points" : "timeline-points active",
           pixelShift = ($("#timeline").width() - bufferWidth) * dateShift - 16 + (0.5 * bufferWidth);
           html = "<div class='" + classes + "' style='margin-left: " + Math.round(pixelShift) + "px' data-eventid='" + evt.id + "'>" + (index + 1) + "</div>";
