@@ -91,6 +91,7 @@
           MT.pages = data.events.chunk(MT.chunk_size);
           MT.total_pages = MT.pages.length;
 
+          $(".music-tour-map").addClass("hasMap");
           MT.svg = d3.select(".music-tour-map").append("svg")
               .attr("viewBox", "0 0 " + MT.width + " " + MT.height)
               .attr("width", MT.width)

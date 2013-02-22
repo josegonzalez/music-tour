@@ -80,8 +80,9 @@ a:hover { color: #005278; }
 
 /* SEARCH */
 .music-tour-search {
+  background: url('http://seatgeek.com/images/new/griddle.png') repeat;
   height: 100px;
-  margin-top: 20px;
+  padding-top: 20px;
 }
 .search-form {
   position: relative;
@@ -167,10 +168,15 @@ form .search-ghost {
 
 /* 2. Mapping Interface */
 .music-tour-map-container {
-  padding: 15px 20px;
+  background: url(http://seatgeek.com/images/new/griddle-dark.png) center top repeat;
+  border-top: 1px solid white;
+  padding: 40px 0 0;
+  -webkit-box-shadow: inset 0 6px 6px -6px rgba(0, 0, 0, .5);
+  -moz-box-shadow: inset 0 6px 6px -6px rgba(0, 0, 0, .5);
+  box-shadow: inset 0 6px 6px -6px rgba(0, 0, 0, .5);
 }
 .music-tour-map-container .center {
-  min-height: 760px;
+  min-height: 600px;
 }
 .music-tour-map-container h2 {
   font-size: 40px;
