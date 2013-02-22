@@ -39,7 +39,7 @@ a:hover { color: #005278; }
 
 /* 1. Header and copy */
 .header {
-  background: #303030;
+  background: #303030 url(head-center.jpg) 0 0 no-repeat;
   padding: 40px 20px;
   color: #FFF;
 }
@@ -57,7 +57,7 @@ a:hover { color: #005278; }
   color: #000;
   display: inline-block;
   font-size: 12px;
-  background: url(http://seatgeek.com/images/sg-play-widget/promo/logo.png) top left no-repeat;
+  background: url(logo.png) top left no-repeat;
   margin: 5px 0 -5px;
   padding: 7px 0 11px 110px;
   position: absolute;
@@ -80,7 +80,7 @@ a:hover { color: #005278; }
 
 /* SEARCH */
 .music-tour-search {
-  background: url('http://seatgeek.com/images/new/griddle.png') repeat;
+  background: url('griddle.png') repeat;
   height: 100px;
   padding-top: 20px;
 }
@@ -117,7 +117,7 @@ a:hover { color: #005278; }
   transition: box-shadow .3s ease;
 }
 .search-submit-large {
-  background: url(http://seatgeek.com/images/new/home/search.png) top no-repeat;
+  background: url(search.png) top no-repeat;
   width: 103px;
   height: 75px;
   position: absolute;
@@ -168,7 +168,7 @@ form .search-ghost {
 
 /* 2. Mapping Interface */
 .music-tour-map-container {
-  background: url(http://seatgeek.com/images/new/griddle-dark.png) center top repeat;
+  background: url(griddle-dark.png) center top repeat;
   border-top: 1px solid white;
   padding: 40px 0 0;
   -webkit-box-shadow: inset 0 6px 6px -6px rgba(0, 0, 0, .5);
