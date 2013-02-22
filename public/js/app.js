@@ -260,8 +260,8 @@
     $(".music-tour-timeline-points").hoverIntent(
       function() {
         MT.reactivatePoints($(this), $(this).css("z-index"));
-      }, function() {})
-    ;
+      }, function() {}
+    );
 
     // do things on mouseenter of map points
     $(".music-tour-label, .music-tour-points").hoverIntent(
