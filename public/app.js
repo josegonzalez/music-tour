@@ -218,7 +218,8 @@
   };
 
   MT.daysSince = function(d) {
-    return Math.round((new Date() - Date.parse(d))/(24*60*60*1000));
+    var days = Math.round((new Date() - Date.parse(d))/(24*60*60*1000));
+    return days + " day" + (days === 1 ? '': 's') + " ago";
   };
 
   MT.pixelShift = function(datetime_local, first_date, timespan) {
@@ -268,28 +269,17 @@
               lastDateState = "never",
               daysSinceState = "never";
 
-          var openers = _.map(e.performers, function(p) {
-            return {
-              "id": p.id,
-              "short_name": p.short_name,
-              "slug": p.slug
-            };
-          });
-          openers.shift();
+          e.performers.shift();
 
           for (var venue_id in data.venue) {
             if (venue_id == e.venue.id) {
-              lastDateVenue = data.venue[venue_id].date;
-              daysSinceVenue = MT.daysSince(lastDateVenue);
-              daysSinceVenue = daysSinceVenue == 1 ? daysSinceVenue + " day ago" : daysSinceVenue + " days ago";
+              daysSinceVenue = MT.daysSince(lastDateVenue = data.venue[venue_id].date);
             }
           }
 
           for (var state in data.states) {
             if (state == e.venue.state) {
-              lastDateState = data.states[state].date;
-              daysSinceState = MT.daysSince(lastDateState);
-              daysSinceState = daysSinceState == 1 ? daysSinceState + " day ago" : daysSinceState + " days ago";
+              daysSinceState = MT.daysSince(lastDateState = data.states[state].date);
             }
           }
 
@@ -299,12 +289,12 @@
             "performer_short_name": e.performers[0].short_name,
             "venue_id": e.venue.id,
             "venue_name": e.venue.name,
-            "venue_state": states[e.venue.state],
+            "venue_state": MT.states[e.venue.state],
             "last_date_venue": lastDateVenue,
             "last_date_state": lastDateState,
             "days_since_venue": daysSinceVenue,
             "days_since_state": daysSinceState,
-            "openers": openers
+            "openers": e.performers
           };
 
           if (index === 0) {
@@ -332,7 +322,7 @@
     $(".music-tour-days-since-state").text(thisObjInfo.days_since_state);
   };
 
-  var states = {
+  MT.states = {
     'AL': 'Alabama',
     'AK': 'Alaska',
     'AZ': 'Arizona',
