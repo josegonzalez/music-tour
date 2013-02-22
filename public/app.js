@@ -119,7 +119,7 @@
                       .attr("event_id", evt.id)
                       .attr("class", "music-tour-events event-" + evt.id)
                       .on("mouseover", tooltip)
-                      .on("tooltip", tooltip);
+                      .on("tip", tooltip);
 
       group.append("path")
         .datum({type: "MultiPoint", coordinates: [coords]})
@@ -195,7 +195,7 @@
           }
 
           // attach seo data object to relevant points and point labels for getting later on mouseover
-          $(".music-tour-timeline-points[data-eventid='" + e.id + "'], svg path.points.event-" + e.id + ", svg text.place-label.event-" + e.id).data("info", obj);
+          $(".music-tour-timeline-points[data-eventid='" + e.id + "'], svg .music-tour-points.event-" + e.id + ", svg .music-tour-label.event-" + e.id).data("info", obj);
         });
       },
       dataType: "jsonp"
