@@ -180,6 +180,7 @@
   };
 
   MT.clearPage = function() {
+    $(".tooltip").remove();
     $(".music-tour-seo").remove();
     $(".music-tour-timeline-points").remove();
     MT.svg.selectAll(".music-tour-events")
