@@ -30,7 +30,7 @@
   <div class="center">
 	<h3>Key Stats</h3>
 	<p>Opener(s):&nbsp;
-		<span class="music-tour-openers">{{ opener }}</span><br/>
+		<span class="music-tour-openers">{{ opener.join(", ") }}</span><br/>
 		Days since <span class="music-tour-performer-name">{{ info.performer_short_name }}</span> was in <span class="music-tour-state-name">{{ info.venue_state }}</span>:&nbsp;
 		<span class="music-tour-days-since-state">{{ info.days_since_state }}</span><br/>
 		Days since <span class="music-tour-performer-name">{{ info.performer_short_name }}</span> was last at <span class="music-tour-venue-name">{{ info.venue_name }}</span>:&nbsp;
