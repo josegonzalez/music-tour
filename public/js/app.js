@@ -490,6 +490,8 @@
     'WY': 'Wyoming'
   };
 
+  $('.music-tour-map-container').disableSelection();
+
   if (MT.getParameterByName("performer")) {
     MT.fire(MT.getParameterByName("performer"));
   }
