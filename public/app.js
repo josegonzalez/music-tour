@@ -86,8 +86,13 @@
       .await(function(error, us, data) {
           // ERROR DETECTION
 
+          // Ensure that the results are all from the US
+          data.events = _.filter(data.events, function(evt) { return evt.venue.country == "US"; });
+
+          // Hack to ensure we can get SEO information
           MT.artistId = data.events[0].performers[0].id;
 
+          // Add the events div to the bottom of the page
           MT.addEvents(data.events);
 
           MT.pages = data.events.chunk(MT.chunk_size);
