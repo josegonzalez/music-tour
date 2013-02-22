@@ -121,7 +121,11 @@
       getSeoData(events);
 
       function tooltip() {
-        var that = $(d3.select(this));
+        var that = $(d3.select(this)),
+            isFromSvg = $(d3.event.fromElement).is("svg"),
+            isFromPath = $(d3.event.fromElement).is("path"),
+            isToPath = $(d3.event.toElement).is("path");
+
         that.tooltip({
           container: "body",
           html: true,
@@ -132,7 +136,7 @@
             '<div class="music-tour-info">' + evt.venue.name + '</div>'
           ].join("\n")});
 
-        if ($(d3.event.fromElement).is("svg") || ($(d3.event.fromElement).is("path") && $(d3.event.toElement).is("path"))) that.tooltip("show");
+        if (isFromSvg || (isFromPath && isToPath)) that.tooltip("show");
       }
 
       var group = svg.selectAll("music-tour-events")
