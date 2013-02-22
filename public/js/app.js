@@ -273,9 +273,9 @@
   MT.tooltip = function(d, index) {
     var that = $(d3.select(this)),
         coords = _.extend({}, [d.venue.location.lon, d.venue.location.lat]),
-        isFromSvg = $(d3.event.fromElement).is("svg"),
-        isFromPath = $(d3.event.fromElement).is("path"),
-        isToPath = $(d3.event.toElement).is("path"),
+        isFromSvg = d3.event ? $(d3.event.fromElement).is("svg") : true,
+        isFromPath = d3.event ? $(d3.event.fromElement).is("path") : true,
+        isToPath = d3.event ? $(d3.event.toElement).is("path") : true,
         location = 'center=' + d.venue.location.lat + ',' + d.venue.location.lon;
 
     that.tooltip({
