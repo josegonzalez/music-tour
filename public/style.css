@@ -70,6 +70,7 @@ a:hover { color: #005278; }
 .search-form {
   position: relative;
 }
+
 .search-bg {
   right: 115px;
   border-radius: 5px;
@@ -79,12 +80,20 @@ a:hover { color: #005278; }
   left: 2px;
   height: 70px;
   border: 1px solid #9A9A9A;
-  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .2);
-  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, .2);
-  box-shadow: 0 1px 1px rgba(0, 0, 0, .2);
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
+  
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+}
+
+.search-bg.focused {
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .2), 0 0 7px 5px rgba(81, 150, 243, 0.9);
+  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, .2), 0 0 7px 5px rgba(81, 150, 243, 0.9);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .2), 0 0 7px 5px rgba(81, 150, 243, 0.9);
+  
   -webkit-transition: box-shadow .3s ease;
   -moz-transition: box-shadow .3s ease;
   transition: box-shadow .3s ease;
@@ -125,12 +134,10 @@ form .search-ghost {
   outline: none;
   width: 100%;
 }
-.search-form input[type="text"]{
-  font: normal 30px proxima-nova-1, proxima-nova-2, helvetica, arial, sans-serif;
-  padding-top: 9px !important;
-}
 
 .search-form input[type="text"] {
+  font: normal 30px proxima-nova-1, proxima-nova-2, helvetica, arial, sans-serif;
+  padding-top: 9px !important;
   position: absolute;
   top: 0;
   left: 0;

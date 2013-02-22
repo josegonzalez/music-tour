@@ -34,7 +34,15 @@
       }, 0);
     });
 
-  $('.search-input').focus();
+
+  $('.search-input')
+    .on('focus', function() {
+      $(".search-bg").addClass("focused");
+    })
+    .on('blur', function() {
+      $(".search-bg").removeClass("focused");
+    })
+    .focus();
 
 
   window.MT = window.MT || {};
