@@ -14,6 +14,15 @@ path {
   stroke-linejoin: round;
 }
 
+.studdly {
+  margin: 10px auto 0 auto;
+  display: block;
+  border-radius: 8px;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+}
+
 .ya-done-goofed {
   margin: 0 auto;
   display: block;
