@@ -9,7 +9,8 @@
       parent:    $("body"),
       presubmit: null,
       select:    function(item) { document.location = item.attr("href"); },
-      see_all:   true
+      see_all:   true,
+      top:       true
     },
     _create: function() {
       var that = this,
@@ -188,8 +189,10 @@
       }
 
       $.each(["tophit", "teamband", "event", "venue", "tournament"], function (i, section) {
-        if (results[section] && results[section].length)
+        if (results[section] && results[section].length) {
+          if (section == "tophit" && !that.options.top) return;
           that._renderSection(tbody, section, results[section]);
+        }
       });
 
       this.focus = null;
