@@ -34,6 +34,22 @@ path {
 }
 
 /* ben's css */
+html, body {
+  margin: 0;
+}
+
+html {
+  padding: 0;
+  width: 100%;
+}
+
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  padding: 15px;
+  width: 790px;
+}
+
 #timeline {
   width: 100%;
 }
@@ -55,7 +71,6 @@ path {
   color: #388ee8;
   cursor: pointer;
   display: inline-block;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 20px;
   line-height: 30px;
   height: 30px;
@@ -72,5 +87,11 @@ path {
 
 .tour-map {
   margin: auto;
-  width: 790px;
+  width: 100%;
+}
+
+.openers, 
+.days-since-venue, 
+.days-since-state {
+  font-weight: bold;
 }

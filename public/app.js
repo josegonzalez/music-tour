@@ -80,6 +80,62 @@
         .text(function(d) { return index + 1; });
     });
 
+    // get seo data
+    var seoUrl = "http://seatgeek.com/utility/mapseo?performer_id=918";
+    var urlPieces = _.map(events, function(e, index) {
+      return "&venues[" + index + "][state]=" + e.venue.state + "&venues[" + index + "][id]=" + e.venue.id;
+    });
+    var seoUrl = seoUrl + urlPieces.join("");
+    $.ajax({
+      url: seoUrl,
+      success: function(data) {
+        events.forEach(function(e, index) {
+          var obj = {};
+
+          var performers = _.map(e.performers, function(p) { 
+            var o = {};
+            o["id"] = p.id;
+            o["short_name"] = p.short_name;
+            o["slug"] = p.slug;
+            return o; 
+          });
+          performers.shift();
+
+          var lastDateVenue = daysSinceVenue = "never";
+          for (var key in data.venue) {
+            if (key == e.venue.id) {
+              lastDateVenue = data.venue[key].date;
+              daysSinceVenue = Math.round((new Date() - Date.parse(lastDateVenue))/(24*60*60*1000));
+            }
+          }
+
+          var lastDateState = daysSinceState = "never";
+          for (var key in data.states) {
+            if (key == e.venue.state) { 
+              lastDateState = data.states[key].date;
+              daysSinceState = Math.round((new Date() - Date.parse(lastDateState))/(24*60*60*1000));
+            }
+          }
+          
+          obj["event_id"] = e.id;
+          obj["performer_slug"] = e.performers[0].slug;
+          obj["performer_short_name"] = e.performers[0].short_name;
+          obj["venue_id"] = e.venue.id;
+          obj["venue_name"] = e.venue.name;
+          obj["venue_state"] = e.venue.state;
+          obj["last_date_venue"] = lastDateVenue;
+          obj["last_date_state"] = lastDateState;
+          obj["days_since_venue"] = daysSinceVenue;
+          obj["days_since_state"] = daysSinceState;
+          obj["openers"] = performers;
+          
+          $("[data-eventid='" + e.id + "']").data("info", obj);
+        });
+      },
+      dataType: "jsonp"
+    });
+
+    // activate stuff on mouseenter of timeline points
     $(".timeline-points").mouseenter(function() {
       $(".timeline-points").removeClass("active");
       $(this).addClass("active");
@@ -89,9 +145,20 @@
       });
       var thisMapPoint = $("svg path.points.event-" + $(this).attr("data-eventid"));
       thisMapPoint.attr("class", thisMapPoint.attr("class") + " active");
+
+      var thisObjInfo = $(this).data("info");
+      var openerHtml = _.map(thisObjInfo.openers, function(o, i) {
+        return "<a href='http://seatgeek.com/" + o.slug + "-tickets'>" + o.short_name + "</a>"
+      });
+      $("span.openers").html(openerHtml.join(", "));
+      $("span.performer-name").text(thisObjInfo.performer_short_name);
+      $("span.venue-name").text(thisObjInfo.venue_name);
+      $("span.state-name").text(thisObjInfo.venue_state);
+      $("span.days-since-venue").text(thisObjInfo.days_since_venue);
+      $("span.days-since-state").text(thisObjInfo.days_since_state);
     });
 
-    //on mouseenter of map point label, activate the map point + corresponding timeline point
+    // activate stuff on mouseenter of map points
     $("svg text.place-label, svg path.points").hover(function() {
       $("svg path.points, .timeline-points").each(function() {
         $(this).attr("class", $(this).attr("class").replace(" active",""));
