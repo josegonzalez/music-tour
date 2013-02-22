@@ -8,7 +8,7 @@ path {
   cursor: pointer;
   fill: #fff;
   stroke: #80C5FF;
-  stroke-width: 2px;
+  stroke-width: 1px;
 }
 
 .points.active {
@@ -173,7 +173,7 @@ body {
 
 .timeline-points {
   background-color: #fff;
-  border: 2px solid #80C5FF;
+  border: 1px solid #80C5FF;
   border-radius: 18px;
   color: #388ee8;
   cursor: pointer;
