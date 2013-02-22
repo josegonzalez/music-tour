@@ -75,6 +75,10 @@
       .remove();
   }
 
+  function daysSince(d) {
+    return Math.round((new Date() - Date.parse(d))/(24*60*60*1000));
+  }
+
   function drawPage(page) {
     var events = pages[page],
         firstDate = Date.parse(events[0].datetime_local),
@@ -159,14 +163,14 @@
           for (var venue_id in data.venue) {
             if (venue_id == e.venue.id) {
               lastDateVenue = data.venue[venue_id].date;
-              daysSinceVenue = Math.round((new Date() - Date.parse(lastDateVenue))/(24*60*60*1000));
+              daysSinceVenue = daysSince(lastDateVenue);
             }
           }
 
           for (var state in data.states) {
             if (state == e.venue.state) {
               lastDateState = data.states[state].date;
-              daysSinceState = Math.round((new Date() - Date.parse(lastDateState))/(24*60*60*1000));
+              daysSinceState = daysSince(lastDateState);
             }
           }
 
