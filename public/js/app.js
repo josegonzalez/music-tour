@@ -247,8 +247,8 @@
 
     // do things on click of backward/forward arrows
     $(".music-tour-timeline-arrow").unbind("click");
-    $(".music-tour-timeline-points").unbind("mouseenter");
-    $("svg .music-tour-label, svg .music-tour-points").unbind("hover");
+    $(".music-tour-timeline-points").unbind("mouseenter").unbind("mouseover");
+    $("svg .music-tour-label, svg .music-tour-points").unbind("hover").unbind("hoverIntent");
 
     $(".music-tour-timeline-arrow").click(function(e) {
       e.preventDefault();
@@ -257,11 +257,18 @@
     });
 
     // do things on mouseenter of timeline points
-    $(".music-tour-timeline-points").hoverIntent(
-      function() {
-        MT.reactivatePoints($(this), $(this).css("z-index"));
-      }, function() {}
-    );
+    $(".music-tour-timeline-points")
+      .mouseenter(
+        function() {
+          //console.log($($("g.event-" + $(this).attr("data-event-id"))));
+          d3.selectAll("g.event-" + ($(this).attr("data-event-id"))).each(function(d, i) { MT.tooltip.apply(this, [d, i]); });
+        }
+      )
+      .hoverIntent(
+        function() {
+          MT.reactivatePoints($(this), $(this).css("z-index"));
+        }, function() {}
+      );
 
     // do things on mouseenter of map points
     $(".music-tour-label, .music-tour-points").hoverIntent(
@@ -290,7 +297,10 @@
         '<div class="clear"></div>'
       ].join("\n")});
 
-    if (isFromSvg || (isFromPath && isToPath)) that.tooltip("show");
+    if (isFromSvg || (isFromPath && isToPath)) {
+      $(".tooltip").remove();
+      that.tooltip("show");
+    }
   };
 
   MT.shiftActivePoint = function(direction, events) {
@@ -401,6 +411,7 @@
 
           var obj = {
             "event_id": e.id,
+            //"event_date": e.datetime_local,
             "performer_slug": pri_performer.slug,
             "performer_short_name": pri_performer.short_name,
             "venue_id": e.venue.id,
