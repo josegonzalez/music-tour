@@ -90,7 +90,7 @@
           bufferWidth = 300,
           classes = index ? "timeline-points" : "timeline-points active",
           pixelShift = ($("#timeline").width() - bufferWidth) * dateShift - 16 + (0.5 * bufferWidth);
-          html = "<div class='" + classes + "' style='margin-left: " + Math.round(pixelShift) + "px' data-eventid='" + evt.id + "'>" + (index + 1) + "</div>";
+          html = "<div class='" + classes + "' style='margin-left: " + Math.round(pixelShift) + "px; z-index:" + (20-index) + "' data-eventid='" + evt.id + "'>" + (index + 1) + "</div>";
 
       $("#timeline-points").append(html);
 
